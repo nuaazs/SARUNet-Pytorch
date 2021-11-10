@@ -4,6 +4,39 @@
 ![](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/BLtPk.jpg)
 ![](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/BmDPs.jpg)
 
+## Preparation
+
+All the models have been trained on 2\*12GB GTX1080Ti GPU.
+
+### Environment setup
+
+We advise the creation of a new conda environment including all necessary packages. The repository includes a requirements file. Please create and activate the new environment with
+
+```
+conda env create -f requirements.yml
+conda activate attngan
+```
+
+### Dataset preparation
+
+
+
+## Pretrained weights
+
+We release a pretrained set of weights to allow reproducibility of our results. The weights are downloadable from [here](). Once downloaded, unpack the file in the root of the project and test them with the inference notebook.
+
+## Training
+
+The training routine of Attn-GAN is mainly based on the pix2pix codebase, available with details in the official repository.
+
+To launch a default training, run
+
+```
+python train.py --path_data path/to/data --gpu_ids 0
+```
+
+
+
 ## MAE Result
 |                  | Patient1    | Patient2    | Patient3    |
 | ---------------- | ----------- | ----------- | ----------- |
