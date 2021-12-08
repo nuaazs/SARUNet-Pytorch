@@ -15,7 +15,7 @@ import torch.utils.data
 from data.base_dataset import BaseDataset
 
 
-def find_dataset_using_name(dataset_name):
+def find_dataset_using_name(dataset_name,dataset_filetype):
     """Import the module "data/[dataset_name]_dataset.py".
 
     In the file, the class called DatasetNameDataset() will
@@ -26,7 +26,7 @@ def find_dataset_using_name(dataset_name):
     datasetlib = importlib.import_module(dataset_filename)
 
     dataset = None
-    target_dataset_name = dataset_name.replace('_', '') + 'dataset'
+    target_dataset_name = dataset_name.replace('_', '') + 'dataset'+"_"+dataset_filetype
     for name, cls in datasetlib.__dict__.items():
         if name.lower() == target_dataset_name.lower() \
            and issubclass(cls, BaseDataset):
@@ -38,9 +38,9 @@ def find_dataset_using_name(dataset_name):
     return dataset
 
 
-def get_option_setter(dataset_name):
+def get_option_setter(dataset_name,dataset_filetype):
     """Return the static method <modify_commandline_options> of the dataset class."""
-    dataset_class = find_dataset_using_name(dataset_name)
+    dataset_class = find_dataset_using_name(dataset_name,dataset_filetype)
     return dataset_class.modify_commandline_options
 
 
@@ -69,7 +69,7 @@ class CustomDatasetDataLoader():
         Step 2: create a multi-threaded data loader.
         """
         self.opt = opt
-        dataset_class = find_dataset_using_name(opt.dataset_mode)
+        dataset_class = find_dataset_using_name(opt.dataset_mode,opt.filetype)
         self.dataset = dataset_class(opt)
         print("dataset [%s] was created" % type(self.dataset).__name__)
         self.dataloader = torch.utils.data.DataLoader(

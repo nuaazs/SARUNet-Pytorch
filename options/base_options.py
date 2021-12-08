@@ -57,6 +57,7 @@ class BaseOptions():
         parser.add_argument('--suffix', default='', type=str, help='customized suffix: opt.name = opt.name + suffix: e.g., {model}_{netG}_size{load_size}')
         parser.add_argument('--style_loss', action='store_true', help='use style_loss or not')
         #parser.add_argument('--continue_train', default=0, type=int, help='')
+        parser.add_argument('--filetype', default='img', type=str)
 
         self.initialized = True
         return parser
@@ -82,7 +83,7 @@ class BaseOptions():
 
         # modify dataset-related parser options
         dataset_name = opt.dataset_mode
-        dataset_option_setter = data.get_option_setter(dataset_name)
+        dataset_option_setter = data.get_option_setter(dataset_name,opt.filetype)
         parser = dataset_option_setter(parser, self.isTrain)
 
         # save and return the parser

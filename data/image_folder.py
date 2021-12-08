@@ -8,17 +8,27 @@ import torch.utils.data as data
 
 from PIL import Image
 import os
+import scipy.io
 
 IMG_EXTENSIONS = [
     '.jpg', '.JPG', '.jpeg', '.JPEG',
     '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',
-    '.tif', '.TIF', '.tiff', '.TIFF',
+    '.tif', '.TIF', '.tiff', '.TIFF','npy','mat'
 ]
 
 
 def is_image_file(filename):
     return any(filename.endswith(extension) for extension in IMG_EXTENSIONS)
 
+def get_mat(_path):
+    data = scipy.io.loadmat(_path) # 读取mat文件
+    for key in data.keys():
+        if ("__" not in key):
+            _key = key
+    #print(_path)
+    #print(data[_key].shape)
+    output = data[_key]
+    return(output)
 
 def make_dataset(dir, max_dataset_size=float("inf")):
     images = []
