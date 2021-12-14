@@ -2,8 +2,7 @@ import torch
 from .base_model import BaseModel
 from . import networks
 from cbam_models.SmaAt_UNet import SmaAt_UNet
-from ct_loss import CtLoss
-from ct_loss import PerceptualLoss
+from util.ct_loss import CtLoss,PerceptualLoss
 
 class Pix2PixModel(BaseModel):
     """ This class implements the pix2pix model, for learning a mapping from input images to output images given paired data.

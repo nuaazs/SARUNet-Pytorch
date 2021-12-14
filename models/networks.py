@@ -5,7 +5,10 @@ import functools
 from torch.optim import lr_scheduler
 from models.unet import UNet,attn_UNet
 from smat_models.SmaAt_UNet import SmaAt_UNet
+from models.resunet import *
 from models.ffc import FFCResNetGenerator
+
+# from models.stylegan import StyleGAN
 import torch.nn.functional as F
 
 ###############################################################################
@@ -231,8 +234,8 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=False, in
         net = ResnetGenerator(input_nc, output_nc,use_attn=True,ngf=ngf, norm_layer=norm_layer, use_dropout=use_dropout, n_blocks=9)
     elif netG == 'resnet':  #4.9M
         net = ResnetGenerator(input_nc, output_nc,use_attn=False, ngf=ngf, norm_layer=norm_layer, use_dropout=use_dropout, n_blocks=9)
-    # elif netG == 'smatunet':  #4.9M
-    #     net = SmaAt_UNet(input_nc, output_nc)
+    elif netG == 'smatunet':  #4.9M
+        net = SmaAt_UNet(input_nc, output_nc)
     elif netG == 'attnunet_128':
         net = UnetGenerator(input_nc, output_nc, 7, ngf, norm_layer=norm_layer, use_dropout=use_dropout,use_depthwise=False,use_attn=True)
     elif netG == 'attnunet_256':
@@ -251,6 +254,14 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=False, in
         net = UnetGenerator(input_nc, output_nc, 8, ngf, norm_layer=norm_layer, use_dropout=use_dropout,use_depthwise=True,use_attn=False)
     elif netG == 'ffc':
         net = FFCResNetGenerator(input_nc, output_nc)
+    # elif netG == 'stylegan':
+    #    net = StyleGAN(input_nc,output_nc)
+    elif netG == 'resunet':
+        net = ResUnet(input_nc,output_nc)
+    elif netG == 'resunetpp':
+        net = ResUnetPlusPlus(input_nc,output_nc)
+    elif netG == 'resnet18_cbam':
+        net = resnet18_cbam(input_nc,output_nc)
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
     

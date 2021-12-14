@@ -97,10 +97,10 @@ if __name__ == '__main__':
             model.save_networks('latest')
             model.save_networks(epoch)
         
-        test_score = model.get_test_score(test_dataset)
+        test_score = model.get_test_score(test_dataset,opt.batch_size)
 
 
-        with open(f"{name}_test_socre.txt","a") as f:
+        with open(f"./scores/{name}.txt","a") as f:
             f.write(str(epoch)+str(test_score)+"\n")  # 自带文件关闭功能，不需要再写f.close() 记得添加换行符！
 
         print(f"Test Score:{test_score}. Best Score :{best_score}")

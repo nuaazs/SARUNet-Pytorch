@@ -231,13 +231,13 @@ class BaseModel(ABC):
             if net is not None:
                 for param in net.parameters():
                     param.requires_grad = requires_grad
-    def get_test_score(self,loader):
+    def get_test_score(self,loader,batch_size):
         net = getattr(self, 'netG')
         #net.eval()
         mask_type = torch.long
         n_val = len(loader)  # the number of batch
         tot = 0
-
+        _n = 0
         criterion_pixelwise = torch.nn.L1Loss()
 
         with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
@@ -250,7 +250,8 @@ class BaseModel(ABC):
                     mask_pred = net(imgs)
 
                 tot += criterion_pixelwise(mask_pred, true_masks).item()
-                pbar.update()
+                _n += 1
+                pbar.update(batch_size)
 
         #net.train()
-        return tot / n_val
+        return tot / _n
