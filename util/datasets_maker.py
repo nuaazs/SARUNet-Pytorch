@@ -31,6 +31,8 @@ class DatasetsMaker(object):
         self.dirs = [dir_name for dir_name in dirs if re.findall(parten, dir_name)!=[]]
 
     def _clasify(self):
+        """将不同模态的dcm文件分开保存至 root_path下的不同的子文件夹。
+        """
         for patient_id,dir_name in enumerate(self.dirs,1):
             fold = os.path.join(self.root_path,dir_name)
             # MRI
@@ -46,8 +48,11 @@ class DatasetsMaker(object):
                     shutil.move(file_path, os.path.join(save_path,filename))
                 except:
                     pass
+        return 0
 
     def _generate_nii(self):
+        """将不同模态的dcm文件转换为nii文件保存至root_path。
+        """
         for patient_id,dir_name in enumerate(self.dirs,1):
             fold = os.path.join(self.root_path,dir_name)
             _,dirs, _ = next(os.walk(fold))
@@ -68,11 +73,20 @@ class DatasetsMaker(object):
                         mode = "ct"
                     else:
                         mode = mri_dir.split("\\")[-1]
-                    sitk.WriteImage(mri_img, fold+"_"+mode+".nii")
+                    sitk.WriteImage(mri_img, self.root_path+"_"+mode+".nii")
                 except:
                     pass
+        return 0
 
     def _parse(self,rootdir):
+        """get filetree for coregister
+
+        Args:
+            rootdir ([str]): [description]
+
+        Returns:
+            [type]: [filetree]
+        """
         filenames = [f for f in os.listdir(rootdir) if f.endswith('.nii')]
         filenames.sort()
         filetree = {}
@@ -84,7 +98,16 @@ class DatasetsMaker(object):
                 filetree[subject][modality] = filename
         return filetree
 
-    def _coregister(self,rootdir, fixed_modality, moving_modality):
+    def _coregister(self, fixed_modality="t1", moving_modality="ct"):
+        """Registration, overwriting the original nii file
+
+        Args:
+            fixed_modality (str, optional): [fixed modality]. Defaults to "t1".
+            moving_modality (str, optional): [moving modality]. Defaults to "ct".
+        """
+        rootdir = self.root_path
+        self.target_files = sorted([target for target in os.listdir(rootdir) if moving_modality in target])
+        self.input_files = sorted([input_ for input_ in os.listdir(rootdir) if fixed_modality in input_])
         rmethod = sitk.ImageRegistrationMethod()
         rmethod.SetMetricAsMattesMutualInformation(numberOfHistogramBins=100)
         rmethod.SetMetricSamplingStrategy(rmethod.RANDOM)
@@ -121,12 +144,32 @@ class DatasetsMaker(object):
             print('-> resampled')
             sitk.WriteImage(moving_image, moving_path)
             print('-> exported')
+        return 0
 
     def _normalization(self,data):
+        """normalize numpy array.
+
+        Args:
+            data ([numpy]): [numpy]
+
+        Returns:
+            [numpy]: [noralized numpy]
+        """
         _range = np.max(data) - np.min(data)
         return (data - np.min(data)) / (_range)
 
     def _resize_image_itk(self,itkimage, newSpacing, originSpcaing, resamplemethod=sitk.sitkNearestNeighbor):
+        """resample itk image.Make sure the dataset has the same voxel size.
+
+        Args:
+            itkimage ([image]): [itkimage]
+            newSpacing ([tuple]): [newSpacing]
+            originSpcaing ([tuple]): [originSpcaing]
+            resamplemethod ([method], optional): [sitk resamplemethod]. Defaults to sitk.sitkNearestNeighbor.
+
+        Returns:
+            [image]: [resampled image]
+        """
         newSpacing = np.array(newSpacing, float)
         # originSpcaing = itkimage.GetSpacing()
         resampler = sitk.ResampleImageFilter()
@@ -134,15 +177,23 @@ class DatasetsMaker(object):
         factor = newSpacing / originSpcaing
         newSize = originSize / factor
         newSize = newSize.astype(np.int)
-        resampler.SetReferenceImage(itkimage)  # 将输出的大小、原点、间距和方向设置为itkimage
-        resampler.SetOutputSpacing(newSpacing.tolist())  # 设置输出图像间距
-        resampler.SetSize(newSize.tolist())  # 设置输出图像大小
+        resampler.SetReferenceImage(itkimage)  # Set the size, origin, spacing, and orientation of the output to itkimage
+        resampler.SetOutputSpacing(newSpacing.tolist())  # Set the output image spacing
+        resampler.SetSize(newSize.tolist())  # Set the size of the output image
         resampler.SetTransform(sitk.Transform(3, sitk.sitkIdentity))
         resampler.SetInterpolator(resamplemethod)
         itkimgResampled = resampler.Execute(itkimage)
         return itkimgResampled
 
-    def _DownsamplingDicomFixedResolution(self,src_path,result_path,heightspacing_new=1.0,widthspacing_new=1.0):
+    def _DownsamplingDicomFixedResolution(self,heightspacing_new=1.0,widthspacing_new=1.0):
+        """Downsampling Dicom Fixed Resolution.Make sure the dataset has the same voxel size.
+
+        Args:
+            heightspacing_new (float, optional): [description]. Defaults to 1.0.
+            widthspacing_new (float, optional): [description]. Defaults to 1.0.
+        """
+        src_path=self.root_path
+        result_path=self.root_path
         heightspacing_new = 1.0
         widthspacing_new = 1.0
         image_list  = sorted([os.path.join(src_path,file) for file in os.listdir(src_path) if "web" not in file])
@@ -151,19 +202,22 @@ class DatasetsMaker(object):
             Spacing = img.GetSpacing()
             print(f"Spacing before : {Spacing}")
             thickspacing, widthspacing, heightspacing = Spacing[2], Spacing[0], Spacing[1]
-            
             srcitk = self._resize_image_itk(img, newSpacing=(widthspacing_new, heightspacing_new, thickspacing),
                                     originSpcaing=(widthspacing, heightspacing, thickspacing),
                                     resamplemethod=sitk.sitkNearestNeighbor)
-            
             path_ = os.path.join(result_path,image.split("/")[-1])
-            
-            print(f"Save path:{path_}")
+            # print(f"Save path:{path_}")
             Spacing_after = srcitk.GetSpacing()
             print(f"Spacing_after = {Spacing_after}")
             sitk.WriteImage(srcitk,path_)
-    
+        return 0
+
     def generate_png(self,output_path):
+        """generate pngs in generate_png.For Dataloader of Pytorch.
+
+        Args:
+            output_path ([str]): [output path]
+        """
         os.makedirs(output_path, exist_ok=True)
         i = 1
         for patient_id in range(len(self.target_files)):
@@ -179,7 +233,7 @@ class DatasetsMaker(object):
             for slice in range(slices_num):
                 target_numpy = np.array(target_data[:,:,slice])
                 input_numpy = np.array(input_data[:,:,slice])
-                # 删除空白图片
+                # Delete blank pictures
                 if (np.max(target_numpy) == np.min(target_numpy)) or (np.max(input_numpy) == np.min(input_numpy)) :
                     continue
                 target_numpy[target_numpy>1700] = 1700
@@ -198,14 +252,26 @@ class DatasetsMaker(object):
                 img.save(output_path + r"/"+file_name+"_"+prefix+".png")
                 i = i+1
         print(f"Done! Total:{i} pairs")
+        return 0
 
     def _change_dir(self,root_path):
+        """Change dir
+
+        Args:
+            root_path ([str]): [Destination path]
+
+        """
         os.chdir(self.root_path)
         return 0
 
     def automake(self,png_path):
         self._clasify()
         self._generate_nii()
-        self._DownsamplingDicomFixedResolution()
-        self._coregister()
-        self.generate_png(png_path)
+        print("  -> Please perform manual screening.")
+        input_str = input("Okay?(Y(es)/N(o))")
+        if "y" in input_str.lower():
+            self._DownsamplingDicomFixedResolution()
+            self._coregister()
+            self.generate_png(png_path)
+        else:
+            print("Exit!")
