@@ -262,6 +262,8 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=False, in
         net = ResUnetPlusPlus(input_nc,output_nc)
     elif netG == 'resnet18_cbam':
         net = resnet18_cbam(input_nc,output_nc)
+    elif netG == 'smatunet':
+        net = SmaAt_UNet(input_nc,output_nc)
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
     
@@ -524,6 +526,7 @@ class ResnetGenerator(nn.Module):
         for i in range(n_downsampling):  # add downsampling layers
             mult = 2 ** i
             model += [nn.Conv2d(ngf * mult, ngf * mult * 2, kernel_size=3, stride=2, padding=1, bias=use_bias),
+                      self.sa1,
                       norm_layer(ngf * mult * 2),
                       nn.ReLU(True)]
 
@@ -538,6 +541,7 @@ class ResnetGenerator(nn.Module):
                                          kernel_size=3, stride=2,
                                          padding=1, output_padding=1,
                                          bias=use_bias),
+                      self.sa1,
                       norm_layer(int(ngf * mult / 2)),
                       nn.ReLU(True)]
         model += [nn.ReflectionPad2d(3)]
