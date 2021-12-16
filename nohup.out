@@ -3777,3 +3777,104 @@
 2021/12/16 23:32:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
 2021/12/16 23:33:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
 2021/12/16 23:34:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:35:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:36:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:37:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:38:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:39:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:40:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:41:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:42:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:43:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:44:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:45:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:46:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:47:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:48:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:49:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:50:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:51:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:52:14 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:53:34 [1;34m[I] [control.go:308] [3a6a9b2cb7d7c1af] control writer is closing[0m
+2021/12/16 23:53:34 [1;31m[E] [control.go:152] [3a6a9b2cb7d7c1af] work connection closed, EOF[0m
+2021/12/16 23:53:34 [1;34m[I] [control.go:407] [3a6a9b2cb7d7c1af] try to reconnect to server...[0m
+2021/12/16 23:53:44 [1;33m[W] [control.go:410] [3a6a9b2cb7d7c1af] reconnect to server error: i/o deadline reached[0m
+2021/12/16 23:53:45 [1;34m[I] [control.go:407] [3a6a9b2cb7d7c1af] try to reconnect to server...[0m
+2021/12/16 23:53:53 [1;34m[I] [control.go:246] [3a6a9b2cb7d7c1af] login to server success, get run id [3a6a9b2cb7d7c1af], server udp port [0][0m
+2021/12/16 23:53:53 [1;34m[I] [control.go:308] [3a6a9b2cb7d7c1af] control writer is closing[0m
+2021/12/16 23:53:53 [1;34m[I] [control.go:407] [3a6a9b2cb7d7c1af] try to reconnect to server...[0m
+2021/12/16 23:53:53 [1;31m[E] [control.go:152] [3a6a9b2cb7d7c1af] work connection closed, EOF[0m
+2021/12/16 23:53:53 [1;34m[I] [control.go:246] [3a6a9b2cb7d7c1af] login to server success, get run id [3a6a9b2cb7d7c1af], server udp port [0][0m
+2021/12/16 23:53:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:54:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:55:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:56:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:57:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:58:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 23:59:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:00:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:01:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:02:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:03:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:04:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:05:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:06:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:07:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:08:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:09:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:10:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:11:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:12:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:13:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:14:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:15:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:16:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:17:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:18:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:19:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:20:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:21:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:22:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:23:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:24:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:25:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:26:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:27:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:28:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:29:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:30:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:31:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:32:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:33:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:34:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:35:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:36:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:37:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:38:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:39:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:40:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:41:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:42:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:43:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:44:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:45:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:46:53 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/17 00:48:05 [1;31m[E] [control.go:152] [3a6a9b2cb7d7c1af] work connection closed, EOF[0m
+2021/12/17 00:48:05 [1;34m[I] [control.go:308] [3a6a9b2cb7d7c1af] control writer is closing[0m
+2021/12/17 00:48:05 [1;34m[I] [control.go:407] [3a6a9b2cb7d7c1af] try to reconnect to server...[0m
+2021/12/17 00:48:15 [1;33m[W] [control.go:410] [3a6a9b2cb7d7c1af] reconnect to server error: i/o deadline reached[0m
+2021/12/17 00:48:16 [1;34m[I] [control.go:407] [3a6a9b2cb7d7c1af] try to reconnect to server...[0m
+2021/12/17 00:48:26 [1;33m[W] [control.go:410] [3a6a9b2cb7d7c1af] reconnect to server error: i/o deadline reached[0m
+2021/12/17 00:48:28 [1;34m[I] [control.go:407] [3a6a9b2cb7d7c1af] try to reconnect to server...[0m
+2021/12/17 00:48:38 [1;33m[W] [control.go:410] [3a6a9b2cb7d7c1af] reconnect to server error: i/o deadline reached[0m
+2021/12/17 00:48:42 [1;34m[I] [control.go:407] [3a6a9b2cb7d7c1af] try to reconnect to server...[0m
+2021/12/17 00:48:45 [1;34m[I] [control.go:246] login to server success, get run id [], server udp port [0][0m
+2021/12/17 00:48:45 [1;34m[I] [control.go:308] control writer is closing[0m
+2021/12/17 00:48:45 [1;34m[I] [control.go:407] try to reconnect to server...[0m
+2021/12/17 00:48:45 [1;31m[E] [control.go:152] work connection closed, EOF[0m
+2021/12/17 00:48:45 [1;34m[I] [control.go:246] [38131cec2a67b0c2] login to server success, get run id [38131cec2a67b0c2], server udp port [0][0m
+2021/12/17 00:48:45 [1;33m[W] [control.go:167] [38131cec2a67b0c2] [ssh_dell] start error: port already used[0m
+2021/12/17 00:49:45 [1;33m[W] [control.go:167] [38131cec2a67b0c2] [ssh_dell] start error: port already used[0m
+2021/12/17 00:50:45 [1;33m[W] [control.go:167] [38131cec2a67b0c2] [ssh_dell] start error: port already used[0m
+2021/12/17 00:51:45 [1;33m[W] [control.go:167] [38131cec2a67b0c2] [ssh_dell] start error: port already used[0m
+2021/12/17 00:52:45 [1;33m[W] [control.go:167] [38131cec2a67b0c2] [ssh_dell] start error: port already used[0m
