@@ -1,7 +1,7 @@
 import torch.nn as nn
 import math
 import torch.utils.model_zoo as model_zoo
-from model.deeplab.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
+from models_v2.deeplab.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 
 webroot = 'https://tigress-web.princeton.edu/~fy/drn/models/'
 

@@ -1,4 +1,4 @@
-from model.deeplab.backbone import resnet, xception, drn, mobilenet
+from models_v2.deeplab.backbone import resnet, xception, drn, mobilenet
 
 def build_backbone(backbone, output_stride, BatchNorm):
     if backbone == 'resnet':

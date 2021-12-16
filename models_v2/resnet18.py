@@ -2,7 +2,7 @@ import torch
 from torch import nn
 import sys
 sys.path.append('..')
-from model.build_contextpath import build_contextpath
+from models_v2.build_contextpath import build_contextpath
 import warnings
 import torch.nn.functional as F
 import numpy as np
@@ -186,7 +186,7 @@ class Res18(torch.nn.Module):
 
 import torch
 from torch import nn
-from model.build_contextpath import build_contextpath
+from models_v2.build_contextpath import build_contextpath
 import warnings
 import torch.nn.functional as F
 warnings.filterwarnings(action='ignore')

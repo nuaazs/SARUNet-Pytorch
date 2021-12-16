@@ -1,4 +1,4 @@
-from model.components import *
+from models_v2.components import *
 
 from torchvision.models import densenet121, resnet18, resnet34, resnet50, resnet101, vgg11, vgg16
 

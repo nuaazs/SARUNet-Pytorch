@@ -4,8 +4,8 @@ import torch.nn.functional as F
 import torchvision
 import sys
 sys.path.append('..')
-from model.denseunet import DenseUnet
-from model.denseunet3d import DenseUnet3D
+from models_v2.denseunet import DenseUnet
+from models_v2.denseunet3d import DenseUnet3D
 
 
 def slice(x, h1, h2):

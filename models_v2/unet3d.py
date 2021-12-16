@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import sys
 sys.path.append('..')
-from model import groupnorm
+from models_v2 import groupnorm
 
 
 class UNet3D(nn.Module):
