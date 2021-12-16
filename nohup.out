@@ -3047,3 +3047,6 @@
 2021/12/16 11:32:41 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
 2021/12/16 11:33:41 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
 2021/12/16 11:34:41 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 11:35:41 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 11:36:41 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m
+2021/12/16 11:37:41 [1;33m[W] [control.go:167] [3a6a9b2cb7d7c1af] [ssh_dell] start error: port already used[0m

@@ -238,7 +238,7 @@ class BaseModel(ABC):
         n_val = len(loader)  # the number of batch
         tot = 0
         _n = 0
-        criterion_pixelwise = torch.nn.L1Loss()
+        criterion_pixelwise = torch.nn.MAELoss()
 
         with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
             for batch in loader:
@@ -249,7 +249,7 @@ class BaseModel(ABC):
                 with torch.no_grad():
                     mask_pred = net(imgs)
 
-                tot += criterion_pixelwise(mask_pred*1800-100, true_masks*1800-100).item()
+                tot += criterion_pixelwise(mask_pred*1800-1000, true_masks*1800-1000).item()
                 _n += 1
                 pbar.update(batch_size)
 
