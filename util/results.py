@@ -162,10 +162,24 @@ class DataLoader(object):
         """set the seg path(path to nii the file)"""
         self.SEG_PATH = seg_path
         return 0
+    
+    def _normalization(self,data_inp):
+        """normalize numpy array.
 
+        Args:
+            data ([numpy]): [numpy]
+
+        Returns:
+            [numpy]: [noralized numpy]
+        """
+        data = data_inp.copy()
+        _range = np.max(data) - np.min(data)
+        return (data - np.min(data)) / (_range)
+
+        
     def _images_list(self,pname,mode):
         all_files  = os.listdir(self.ROOT)
-        _list = sorted([os.path.join(self.ROOT,file_name) for file_name in all_files if (pname in file_name) and (mode in file_name)])
+        _list = sorted([os.path.join(self.ROOT,file_name) for file_name in all_files if (file_name.startswith(pname) ) and (mode in file_name)])
         return _list
     
     def _get_np_list(self,files_list):
@@ -173,17 +187,21 @@ class DataLoader(object):
         for i in range(len(files_list)):
             hu_image = self._get_np(files_list[i])
             np_list.append(hu_image)
-        return np_list
+        return np.array(np_list)
 
     def _get_np(self,filename):
         _np = np.array(Image.open(filename).convert("L"))/255.
+        # _np = self._normalization(_np)
+        _np[_np>1] = 1
+        _np[_np<0] = 0
         hu_np = _np*(1700+1000)-1000
+        # hu_np = _np
         return hu_np
 
     def _get_error(self,real,fake):
         _error = fake - real
-        _error[_error > 1000] = 1000
-        _error[_error < -1000]  = -1000
+        # _error[_error > 1000] = 1000
+        # _error[_error < -1000]  = -1000
         return _error
     
     def _get_mae(self):
@@ -203,8 +221,8 @@ class DataLoader(object):
         """
         label_array = self._get_array(organ,self.pname)
         _error = self.fake_B_array[label_array>0] - self.real_B_array[label_array>0]
-        _error[_error > 1000] = 1000
-        _error[_error < -1000]  = -1000
+        # _error[_error > 1000] = 1000
+        # _error[_error < -1000]  = -1000
         return _error
 
     def _get_label_mae(self,organ):
@@ -272,7 +290,7 @@ class DataLoader(object):
             #print("No organ arryas. Loaded!")
         self.error = self._get_error(self.real_B_array,self.fake_B_array)
         self.mae = self._get_mae()
-        self.organs_mae = self._get_organs_mae()
+        # self.organs_mae = self._get_organs_mae()
 
     def plot(self,plot_mode):
         """AI is creating summary for plot
