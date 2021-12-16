@@ -22,6 +22,8 @@ from models_v2.vggunet import VGGUNet
 from models_v2.vgg19unet import VGG19UNet
 from models_v2.r2unet import *
 from models_v2.factory import AlbuNet
+from models_v2.vnet import Vnet
+from models_v2.VFN import VFN
 
 # from models.stylegan import StyleGAN
 import torch.nn.functional as F
@@ -211,6 +213,7 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
     return net
 
 
+
 def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, init_type='normal', init_gain=0.02, gpu_ids=[]):
     """Create a generator
 
@@ -240,7 +243,8 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, ini
     """
     net = None
     norm_layer = get_norm_layer(norm_type=norm)
-    deep_supervision = True
+    deep_supervision = False
+    use_dropout = True
     if netG == 'attnunet':  #4.9M
         net = attn_UNet(input_nc, output_nc)
     elif netG == 'unet':  #4.9M
@@ -280,6 +284,7 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, ini
         net = resnet18_cbam(input_nc,output_nc)
     elif netG == 'smatunet':
         net = SmaAt_UNet(input_nc,output_nc)
+    
     elif netG == 'denseunet':
         net = DenseUnet(input_nc, output_nc)
     elif netG == 'unetv2':
@@ -299,15 +304,24 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, ini
     
     # elif netG == 'deeplabv3p':
     #     net = DeepLab(output_nc)
-    else:
-        print('NOT VALID MODEL NAME !!!')
-    
+    elif netG == 'cbamresunet':
+        net = CbamResUNet(input_nc, output_nc,deep_supervision=deep_supervision)
+    elif netG == 'dilatedresunet':
+        net = DilatedResUnet(input_nc, output_nc)
+    elif netG == 'vggunet':
+        net = VGGUNet(input_nc, output_nc,dropout=use_dropout)
+    elif netG == 'vgg19unet':
+        net = VGG19UNet(input_nc, output_nc,dropout=use_dropout)
+    elif netG == 'vnet':
+        net = Vnet(input_nc, output_nc)
+    elif netG == 'VFN':
+        net = VFN(input_nc, output_nc)
 
         
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
     
-
+    
 
     return init_net(net, init_type, init_gain, gpu_ids)
 
