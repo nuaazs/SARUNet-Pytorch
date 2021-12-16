@@ -1,7 +1,7 @@
 # Attn-GAN: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT
 
 
-![正常大小的圆角矩形](https://img.shields.io/badge/Pytorch-1.10.1-green.svg)![正常大小的圆角矩形](https://img.shields.io/badge/Python-3.9-blue.svg)![正常大小的圆角矩形](https://img.shields.io/badge/CBAM-green.svg)![正常大小的圆角矩形](https://img.shields.io/badge/Unet-pink.svg)![正常大小的圆角矩形](https://img.shields.io/badge/MRI-CT-red.svg)
+![正常大小的圆角矩形](https://img.shields.io/badge/Pytorch-1.10.1-green.svg)    ![正常大小的圆角矩形](https://img.shields.io/badge/Python-3.9-blue.svg)    ![正常大小的圆角矩形](https://img.shields.io/badge/CBAM-green.svg)    ![正常大小的圆角矩形](https://img.shields.io/badge/Unet-pink.svg)    ![正常大小的圆角矩形](https://img.shields.io/badge/MRI-CT-red.svg)
 
 
 ## Preparation
