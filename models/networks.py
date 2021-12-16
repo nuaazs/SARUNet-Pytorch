@@ -8,6 +8,21 @@ from smat_models.SmaAt_UNet import SmaAt_UNet
 from models.resunet import *
 from models.ffc import FFCResNetGenerator
 
+from models_v2.ssn import SSN
+from models_v2.ssn_cls import SSN_CLS
+from models_v2.unet import UNet
+from models_v2.denseunet import DenseUnet
+from models_v2.resunet import ResUNet
+from models_v2.se_resunet import SeResUNet, Shallow_SeResUNet
+from models_v2.deeplab_v3p import DeepLab
+from models_v2.resnet18 import Res18
+from models_v2.cbam_resunet import CbamResUNet
+from models_v2.dilated_resunet import DilatedResUnet
+from models_v2.vggunet import VGGUNet
+from models_v2.vgg19unet import VGG19UNet
+from models_v2.r2unet import *
+from models_v2.factory import AlbuNet
+
 # from models.stylegan import StyleGAN
 import torch.nn.functional as F
 
@@ -196,7 +211,7 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_ids=[]):
     return net
 
 
-def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=False, init_type='normal', init_gain=0.02, gpu_ids=[]):
+def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, init_type='normal', init_gain=0.02, gpu_ids=[]):
     """Create a generator
 
     Parameters:
@@ -225,7 +240,7 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=False, in
     """
     net = None
     norm_layer = get_norm_layer(norm_type=norm)
-
+    deep_supervision = True
     if netG == 'attnunet':  #4.9M
         net = attn_UNet(input_nc, output_nc)
     elif netG == 'unet':  #4.9M
@@ -256,6 +271,7 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=False, in
         net = FFCResNetGenerator(input_nc, output_nc)
     # elif netG == 'stylegan':
     #    net = StyleGAN(input_nc,output_nc)
+    
     elif netG == 'resunet':
         net = ResUnet(input_nc,output_nc)
     elif netG == 'resunetpp':
@@ -264,6 +280,30 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=False, in
         net = resnet18_cbam(input_nc,output_nc)
     elif netG == 'smatunet':
         net = SmaAt_UNet(input_nc,output_nc)
+    elif netG == 'denseunet':
+        net = DenseUnet(input_nc, output_nc)
+    elif netG == 'unetv2':
+        net = UNet(input_nc, output_nc, deep_supervision=deep_supervision)
+    # elif netG == 'r2attunet':
+    #     net = R2AttU_Net(input_nc, output_nc)
+    elif netG == 'resunetv2':
+        net = ResUNet(input_nc, output_nc, deep_supervision=deep_supervision)
+    elif netG == 'se_resunet':
+        net = SeResUNet(input_nc, output_nc, deep_supervision=deep_supervision, dropout=use_dropout, rate=0.1)
+        # net = Shallow_SeResUNet(input_nc, output_nc, deep_supervision=deep_supervision, dropout=dropout, rate=0.1)
+    # elif netG == 'ssn':
+    #    net = SSN(output_nc, args.context_path, input_nc=input_nc)
+    # elif 'vgg' in netG:
+    #     encoder = netG[:-5]
+    #     net = VGGUNet(input_nc, output_nc, encoder = encoder, pretrain=True, deep_supervision=deep_supervision, dropout = use_dropout, rate=0.1)
+    
+    # elif netG == 'deeplabv3p':
+    #     net = DeepLab(output_nc)
+    else:
+        print('NOT VALID MODEL NAME !!!')
+    
+
+        
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
     
@@ -507,7 +547,7 @@ class ResnetGenerator(nn.Module):
         self.ca1 = ChannelAttention(input_nc)
         self.sa1 = SpatialAttention()
         if use_attn:
-            model = [nn.ReflectionPad2d(3),
+            net = [nn.ReflectionPad2d(3),
                     self.sa1,
                     # self.ca1,
                     nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0, bias=use_bias),
@@ -516,7 +556,7 @@ class ResnetGenerator(nn.Module):
                     #self.ca1,
                     ]
         else:
-            model = [nn.ReflectionPad2d(3),
+            net = [nn.ReflectionPad2d(3),
                     nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0, bias=use_bias),
                     norm_layer(ngf),
                     nn.ReLU(True)
@@ -548,7 +588,7 @@ class ResnetGenerator(nn.Module):
         model += [nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0)]
         model += [nn.Tanh()]
 
-        self.model = nn.Sequential(*model)
+        self.net = nn.Sequential(*model)
 
     def forward(self, input):
         """Standard forward"""
@@ -656,7 +696,7 @@ class NLayerDiscriminator(nn.Module):
         ]
 
         sequence += [nn.Conv2d(ndf * nf_mult, 1, kernel_size=kw, stride=1, padding=padw)]  # output 1 channel prediction map
-        self.model = nn.Sequential(*sequence)
+        self.net = nn.Sequential(*sequence)
 
     def forward(self, input):
         """Standard forward."""
@@ -723,7 +763,7 @@ class UnetGenerator(nn.Module):
         unet_block = UnetSkipConnectionBlock(ngf * 2, ngf * 4, input_nc=None, submodule=unet_block, norm_layer=norm_layer,depthwise=use_depthwise,attn=use_attn)
         unet_block = UnetSkipConnectionBlock(ngf, ngf * 2, input_nc=None, submodule=unet_block, norm_layer=norm_layer,depthwise=use_depthwise,attn=use_attn)
 
-        self.model = UnetSkipConnectionBlock(output_nc, ngf, input_nc=input_nc, submodule=unet_block, outermost=True, norm_layer=norm_layer,depthwise=use_depthwise,attn=use_attn)  # add the outermost layer
+        self.net = UnetSkipConnectionBlock(output_nc, ngf, input_nc=input_nc, submodule=unet_block, outermost=True, norm_layer=norm_layer,depthwise=use_depthwise,attn=use_attn)  # add the outermost layer
 
     def forward(self, input):
         """Standard forward"""
@@ -777,14 +817,14 @@ class UnetSkipConnectionBlock(nn.Module):
                                         padding=1)
             down = [downconv]
             up = [uprelu, upconv, nn.Tanh()]
-            model = down + [submodule] + up
+            net = down + [submodule] + up
         elif innermost:
             upconv = nn.ConvTranspose2d(inner_nc, outer_nc,
                                         kernel_size=4, stride=2,
                                         padding=1, bias=use_bias)
             down = [downrelu, downconv]
             up = [uprelu, upconv, upnorm]
-            model = down + up
+            net = down + up
         else:
             upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc,
                                         kernel_size=4, stride=2,
@@ -798,9 +838,9 @@ class UnetSkipConnectionBlock(nn.Module):
                     up = [uprelu,upconv, upnorm] #  upconv
 
                 if use_dropout:
-                    model = down + [submodule] + up + [nn.Dropout(0.5)]
+                    net = down + [submodule] + up + [nn.Dropout(0.5)]
                 else:
-                    model = down + [submodule] + up
+                    net = down + [submodule] + up
             else:
                 if depthwise:
                     down = [downrelu, downDS, downnorm] # downconv
@@ -810,10 +850,10 @@ class UnetSkipConnectionBlock(nn.Module):
                     up = [uprelu,upconv, upnorm] #  upconv
 
                 if use_dropout:
-                    model = down + [submodule] + up + [nn.Dropout(0.5)]
+                    net = down + [submodule] + up + [nn.Dropout(0.5)]
                 else:
-                    model = down + [submodule] + up
-        self.model = nn.Sequential(*model)
+                    net = down + [submodule] + up
+        self.net = nn.Sequential(*model)
 
     def forward(self, x):
         if self.outermost:
