@@ -106,7 +106,6 @@ class BasicBlock(nn.Module):
 
         return out
 
-
 class Bottleneck(nn.Module):
     expansion = 4
 
@@ -151,7 +150,6 @@ class Bottleneck(nn.Module):
         out = self.relu(out)
 
         return out
-
 
 class ResNet(nn.Module):
 
@@ -215,7 +213,6 @@ class ResNet(nn.Module):
 
         return x
 
-
 def resnet18_cbam(input_channels,output_channels,pretrained=False, **kwargs):
     """Constructs a ResNet-18 model.
 
@@ -229,7 +226,6 @@ def resnet18_cbam(input_channels,output_channels,pretrained=False, **kwargs):
         now_state_dict.update(pretrained_state_dict)
         model.load_state_dict(now_state_dict)
     return model
-
 
 def resnet34_cbam(input_channels,output_channels,pretrained=False, **kwargs):
     """Constructs a ResNet-34 model.
@@ -245,7 +241,6 @@ def resnet34_cbam(input_channels,output_channels,pretrained=False, **kwargs):
         model.load_state_dict(now_state_dict)
     return model
 
-
 def resnet50_cbam(input_channels,output_channels,pretrained=False, **kwargs):
     """Constructs a ResNet-50 model.
 
@@ -259,7 +254,6 @@ def resnet50_cbam(input_channels,output_channels,pretrained=False, **kwargs):
         now_state_dict.update(pretrained_state_dict)
         model.load_state_dict(now_state_dict)
     return model
-
 
 def resnet101_cbam(input_channels,output_channels,pretrained=False, **kwargs):
     """Constructs a ResNet-101 model.
@@ -275,7 +269,6 @@ def resnet101_cbam(input_channels,output_channels,pretrained=False, **kwargs):
         model.load_state_dict(now_state_dict)
     return model
 
-
 def resnet152_cbam(input_channels,output_channels,pretrained=False, **kwargs):
     """Constructs a ResNet-152 model.
 
@@ -289,9 +282,6 @@ def resnet152_cbam(input_channels,output_channels,pretrained=False, **kwargs):
         now_state_dict.update(pretrained_state_dict)
         model.load_state_dict(now_state_dict)
     return model
-
-
-
 
 class DoubleConv(nn.Module):
     """(convolution => [BN] => ReLU) * 2"""
