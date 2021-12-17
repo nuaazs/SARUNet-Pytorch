@@ -249,7 +249,7 @@ class BaseModel(ABC):
                 with torch.no_grad():
                     mask_pred = net(imgs)
 
-                tot += criterion_pixelwise(mask_pred*1800-1000, true_masks*1800-1000).item()
+                tot += criterion_pixelwise(mask_pred, true_masks).item() #*1800-1000
                 _n += 1
                 pbar.update(batch_size)
 

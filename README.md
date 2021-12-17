@@ -1,14 +1,27 @@
 # Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT
 
 <div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/iint.png" width="50px">
 <img src="https://img.shields.io/badge/Pytorch-1.10.1-green.svg"  />
 <img src="https://img.shields.io/badge/Python-3.9-blue.svg"  />
 <img src="https://img.shields.io/badge/CBAM-green.svg"  />
-<img src="https://img.shields.io/badge/Unet-pink.svg"  />
+<img src="https://img.shields.io/badge/ResUNet-pink.svg"  />
 <img src="https://img.shields.io/badge/MRI-CT-red.svg"  />
+<img src="https://img.shields.io/badge/MCNP-6.0-blue.svg"  />
+<img src="https://img.shields.io/badge/BNCT-Dose Calc-green.svg"  />
 </div>
 
+
+
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/attn_unet_压缩后.png" width="800px" />
+</div>
+
+## Table of Content
+
+
 - [Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT](#attn-unet-a-deep-learning-method-for-generating-virtual-ct-from-mri-for-dose-calculation-of-bnct)
+  - [Table of Content](#table-of-content)
   - [Preparation](#preparation)
     - [Environment setup](#environment-setup)
     - [Dataset preparation](#dataset-preparation)
@@ -18,10 +31,26 @@
   - [CBAM MODELS](#cbam-models)
     - [Spatial Attention](#spatial-attention)
     - [Channel Attention](#channel-attention)
+  - [Code structure](#code-structure)
+  - [Pull Request](#pull-request)
+  - [Citation](#citation)
+  - [Other Languages](#other-languages)
+  - [Related Projects](#related-projects)
+  - [Acknowledgments](#acknowledgments)
+    
+    - [Environment setup](#environment-setup)
+    - [Dataset preparation](#dataset-preparation)
+  - [Pretrained weights](#pretrained-weights)
+  - [Training](#training)
+  - [MAE Result](#mae-result)
+  - [CBAM MODELS](#cbam-models)
+    
+    - [Spatial Attention](#spatial-attention)
+    
+    - [Channel Attention](#channel-attention)
+    
+      
 
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/attn_unet.png" width="800px" />
-</div>
 
 ## Preparation
 
@@ -47,8 +76,9 @@ conda activate attngan
 ### Dataset preparation
 
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/preprocess.png" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/preprocess_压缩后.png" width="600px" />
 </div>
+
 Running those commands should result in a similar directory structure:
 
 ```
@@ -120,19 +150,19 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 
 ## CBAM MODELS
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/conv_pool_attn.png" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/conv_pool_attn_压缩后.png" width="600px" />
 </div>
 
 
 ### Spatial Attention
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/spatial.png" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/spatial_压缩后.png" width="600px" />
 </div>
 
 
 ### Channel Attention
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/channel.png" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/channel_压缩后.png" width="600px" />
 </div>
 
 

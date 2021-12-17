@@ -25,6 +25,7 @@ from models_v2.factory import AlbuNet
 from models_v2.vnet import Vnet
 from models_v2.VFN import VFN
 
+from models_v3.res_unet_regressor import CBAM_ResUNet_V3 as ARU
 # from models.stylegan import StyleGAN
 import torch.nn.functional as F
 
@@ -316,7 +317,8 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, ini
         net = Vnet(input_nc, output_nc)
     elif netG == 'VFN':
         net = VFN(input_nc, output_nc)
-
+    elif netG == 'ARU':
+        net = ARU(input_nc, output_nc)
         
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)

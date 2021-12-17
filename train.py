@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
 
         with open(f"./scores/{name}.txt","a") as f:
-            f.write(str(epoch)+str(test_score)+"\n")  # 自带文件关闭功能，不需要再写f.close() 记得添加换行符！
+            f.write(str(epoch)+","+str(test_score)+"\n")  # 自带文件关闭功能，不需要再写f.close() 记得添加换行符！
 
         print(f"Test Score:{test_score}. Best Score :{best_score}")
         if test_score<best_score:
