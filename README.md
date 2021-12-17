@@ -19,6 +19,9 @@
     - [Spatial Attention](#spatial-attention)
     - [Channel Attention](#channel-attention)
 
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/attn_unet.png" width="800px" />
+</div>
 
 ## Preparation
 
@@ -43,6 +46,9 @@ conda activate attngan
 
 ### Dataset preparation
 
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/preprocess.png" width="600px" />
+</div>
 Running those commands should result in a similar directory structure:
 
 ```
@@ -106,18 +112,68 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 | AttnUNet    | 41.848M |          |       |        |        |        |        |       |        |        |        |        |        |        |
 | AttnUNet DS | 37.113M | 68.48    | 16.13 | 71.96  | 35.47  | 62.65  | 70.16  | 56.48 | 50.11  | 67.79  | 89.82  | 85.38  | 90.45  | 73.07  |
 
-![](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/L2bHi.jpg)
-![](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/BLtPk.jpg)
 
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/BLtPk.jpg" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/L2bHi.jpg" width="600px" />
+</div>
 
 ## CBAM MODELS
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/conv_pool_attn.png" width="600px" />
+</div>
 
-![pic1](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/图片8.png)
 
 ### Spatial Attention
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/spatial.png" width="600px" />
+</div>
 
-![spatial-attn](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/空间注意力机制.png)
 
 ### Channel Attention
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/channel.png" width="600px" />
+</div>
 
-![channel-attention](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/通道注意力机制.png)
+
+
+## Code structure
+
+To help users better understand and use our code, we briefly overview the functionality and implementation of each package and each module [here](https://iint.icu/).
+
+
+
+## Pull Request
+
+You are always welcome to contribute to this repository by sending a [pull request](https://help.github.com/articles/about-pull-requests/). Please run `flake8 --ignore E501 .` and `python ./scripts/test_before_push.py` before you commit the code. Please also update the code structure [overview](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/blob/master/docs/overview.md) accordingly if you add or remove files.
+
+
+
+## Citation
+
+If you use this code for your research, please cite our papers.
+
+```
+@inproceedings{}
+}
+```
+
+
+
+## Other Languages
+
+[简体中文]()
+
+
+
+## Related Projects
+
+**[contrastive-unpaired-translation](https://github.com/taesungp/contrastive-unpaired-translation) (CUT)**
+**[CycleGAN-Torch](https://github.com/junyanz/CycleGAN) | [pix2pix-Torch](https://github.com/phillipi/pix2pix) | [pix2pixHD](https://github.com/NVIDIA/pix2pixHD)| [BicycleGAN](https://github.com/junyanz/BicycleGAN) | [vid2vid](https://tcwang0509.github.io/vid2vid/) | [SPADE/GauGAN](https://github.com/NVlabs/SPADE)**
+**[iGAN](https://github.com/junyanz/iGAN) | [GAN Dissection](https://github.com/CSAILVision/GANDissect) | [GAN Paint](http://ganpaint.io/)**
+
+
+
+## Acknowledgments
+
+Our code is inspired by [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) and [pytorch-CBAM](https://github.com/luuuyi/CBAM.PyTorch)
