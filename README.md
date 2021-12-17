@@ -51,12 +51,6 @@
     
       
 
-<<<<<<< HEAD
-=======
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/attn_unet_压缩后.png" width="800px" />
-</div>
->>>>>>> cb4df85da3f9d81b611c12fc95b6a9d3ce7afbe8
 
 ## Preparation
 
@@ -82,11 +76,7 @@ conda activate attngan
 ### Dataset preparation
 
 <div align=center>
-<<<<<<< HEAD
 <img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/preprocess_压缩后.png" width="600px" />
-=======
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/preprocess.png_压缩后" width="600px" />
->>>>>>> cb4df85da3f9d81b611c12fc95b6a9d3ce7afbe8
 </div>
 
 Running those commands should result in a similar directory structure:
