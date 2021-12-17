@@ -1,4 +1,15 @@
-# Attn-GAN: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT
+# Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT
+
+- [Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT](#attn-unet-a-deep-learning-method-for-generating-virtual-ct-from-mri-for-dose-calculation-of-bnct)
+  - [Preparation](#preparation)
+    - [Environment setup](#environment-setup)
+    - [Dataset preparation](#dataset-preparation)
+  - [Pretrained weights](#pretrained-weights)
+  - [Training](#training)
+  - [MAE Result](#mae-result)
+  - [CBAM MODELS](#cbam-models)
+    - [Spatial Attention](#spatial-attention)
+    - [Channel Attention](#channel-attention)
 
 <div align=center>
 <img src="https://img.shields.io/badge/Pytorch-1.10.1-green.svg"  />
