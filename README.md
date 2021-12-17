@@ -1,5 +1,13 @@
 # Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT
 
+<div align=center>
+<img src="https://img.shields.io/badge/Pytorch-1.10.1-green.svg"  />
+<img src="https://img.shields.io/badge/Python-3.9-blue.svg"  />
+<img src="https://img.shields.io/badge/CBAM-green.svg"  />
+<img src="https://img.shields.io/badge/Unet-pink.svg"  />
+<img src="https://img.shields.io/badge/MRI-CT-red.svg"  />
+</div>
+
 - [Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT](#attn-unet-a-deep-learning-method-for-generating-virtual-ct-from-mri-for-dose-calculation-of-bnct)
   - [Preparation](#preparation)
     - [Environment setup](#environment-setup)
@@ -11,13 +19,6 @@
     - [Spatial Attention](#spatial-attention)
     - [Channel Attention](#channel-attention)
 
-<div align=center>
-<img src="https://img.shields.io/badge/Pytorch-1.10.1-green.svg"  />
-<img src="https://img.shields.io/badge/Python-3.9-blue.svg"  />
-<img src="https://img.shields.io/badge/CBAM-green.svg"  />
-<img src="https://img.shields.io/badge/Unet-pink.svg"  />
-<img src="https://img.shields.io/badge/MRI-CT-red.svg"  />
-</div>
 
 ## Preparation
 
@@ -106,12 +107,7 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 | AttnUNet DS | 37.113M | 68.48    | 16.13 | 71.96  | 35.47  | 62.65  | 70.16  | 56.48 | 50.11  | 67.79  | 89.82  | 85.38  | 90.45  | 73.07  |
 
 ![](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/L2bHi.jpg)
-
 ![](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/BLtPk.jpg)
-![](https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/BmDPs.jpg)
-
-
-
 
 
 ## CBAM MODELS
