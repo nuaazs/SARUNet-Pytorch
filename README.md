@@ -22,7 +22,7 @@
     - [Channel Attention](#channel-attention)
 
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/attn_unet.png" width="800px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/attn_unet_压缩后.png" width="800px" />
 </div>
 
 ## Preparation
@@ -49,7 +49,7 @@ conda activate attngan
 ### Dataset preparation
 
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/preprocess.png" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/preprocess.png_压缩后" width="600px" />
 </div>
 Running those commands should result in a similar directory structure:
 
@@ -122,19 +122,19 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 
 ## CBAM MODELS
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/conv_pool_attn.png" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/conv_pool_attn_压缩后.png" width="600px" />
 </div>
 
 
 ### Spatial Attention
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/spatial.png" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/spatial_压缩后.png" width="600px" />
 </div>
 
 
 ### Channel Attention
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/channel.png" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/channel_压缩后.png" width="600px" />
 </div>
 
 
