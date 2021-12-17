@@ -1,7 +1,7 @@
 # Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT
 
+
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/iint.png" width="50px">
 <img src="https://img.shields.io/badge/Pytorch-1.10.1-green.svg"  />
 <img src="https://img.shields.io/badge/Python-3.9-blue.svg"  />
 <img src="https://img.shields.io/badge/CBAM-green.svg"  />
@@ -9,13 +9,11 @@
 <img src="https://img.shields.io/badge/MRI-CT-red.svg"  />
 <img src="https://img.shields.io/badge/MCNP-6.0-blue.svg"  />
 <img src="https://img.shields.io/badge/BNCT-Dose Calc-green.svg"  />
+<img src="https://img.shields.io/badge/IINT-red.svg"  />
 </div>
 
 
-
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/attn_unet_压缩后.png" width="800px" />
-</div>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/iint.png" width="50px">
 
 ## Table of Content
 
