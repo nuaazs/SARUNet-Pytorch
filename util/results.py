@@ -20,6 +20,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib import colors
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np 
 
 
 
@@ -202,6 +204,9 @@ class DataLoader(object):
         _error = fake - real
         return _error
     
+    def _get_rmse(self):
+        return np.sqrt(((self.fake_B_array-self.real_B_array) ** 2).mean())
+    
     def _get_mae(self):
         data= np.abs(self._get_error(self.real_B_array,self.fake_B_array))
         mae= data.mean()
@@ -212,6 +217,13 @@ class DataLoader(object):
         me= data.mean()
         return me
     
+#     def _get_psnr(self):
+#         mse = self._get_mse()
+#         if mse < 1.0e-10:
+#             return 100
+#         PIXEL_MAX = 1
+#         return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
+
     def _get_label_error(self,organ):
         """AI is creating summary for _get_label_error
 
@@ -296,6 +308,8 @@ class DataLoader(object):
             #print("No organ arryas. Loaded!")
         self.error = self._get_error(self.real_B_array,self.fake_B_array)
         self.mae = self._get_mae()
+        self.rmse = self._get_rmse()
+        self.me = self._get_me()
         # self.organs_mae = self._get_organs_mae()
 
     def plot(self,plot_mode):

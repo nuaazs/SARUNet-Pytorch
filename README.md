@@ -1,5 +1,8 @@
 # Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT
 
+> 注意：该项目还未完成。
+>
+> Note: The project is not yet complete.
 
 <div align=center>
 <img src="https://img.shields.io/badge/Pytorch-1.10.1-green.svg"  />
@@ -16,8 +19,9 @@
 <br>
 </div>
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/attn_unet_压缩后.png" width="800px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/saru_压缩后.png" width="800px" />
 </div>
+
 
 
 ## Table of Content
@@ -130,26 +134,21 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 
 ## MAE Result
 
-|             | SIZE    | MEAN MAE | STD   | P1     | P2     | P3     | P4     | P5    | P6     | P7     | P8     | P9     | P10    | P11    |
-| ----------- | ------- | -------- | ----- | ------ | ------ | ------ | ------ | ----- | ------ | ------ | ------ | ------ | ------ | ------ |
-| Unet Basic  |         | 122.98   | 37.35 | 128.34 | 67.84  | 114.92 | 112.87 | 72.68 | 129.47 | 117.37 | 156.94 | 114.34 | 124.1  | 213.96 |
-| Unet 128    | 41.823M | 72.88    | 16.99 | 78.21  | 33.69  | 82.38  | 75.91  | 65.57 | 55.79  | 65.69  | 86.99  | 83.6   | 101.12 | 72.67  |
-| Vnet        |         |          |       |        |        |        |        |       |        |        |        |        |        |        |
-| Pix2Pix     |         | 89.95    | 21.05 | 99.25  | 58.45  | 85.96  | 84.11  | 69.6  | 68.81  | 81.97  | 105.48 | 92.78  | 104.47 | 138.52 |
-| DenseUnet   | 49.518  | 130.76   | 33.68 | 141.6  | 135.38 | 90.63  | 120.42 | 68.05 | 118.58 | 123.39 | 170.87 | 132.6  | 136.5  | 200.34 |
-| ResUNet     |         |          |       |        |        |        |        |       |        |        |        |        |        |        |
-| VggUNet     |         |          |       |        |        |        |        |       |        |        |        |        |        |        |
-| Vgg19UNet   |         |          |       |        |        |        |        |       |        |        |        |        |        |        |
-| SE_ResUNet  |         |          |       |        |        |        |        |       |        |        |        |        |        |        |
-| AttnResUNet |         |          |       |        |        |        |        |       |        |        |        |        |        |        |
-| AttnUNet    | 41.848M |          |       |        |        |        |        |       |        |        |        |        |        |        |
-| AttnUNet DS | 37.113M | 68.48    | 16.13 | 71.96  | 35.47  | 62.65  | 70.16  | 56.48 | 50.11  | 67.79  | 89.82  | 85.38  | 90.45  | 73.07  |
-
+| BackBone            | Params      | MEAN MAE  | STD       | MEAN ME  | STD      | MEAN RMSE  | STD       |
+| ------------------- | ----------- | --------- | --------- | -------- | -------- | ---------- | --------- |
+| UNet                | 17.266 M    | 124.2     | 36.56     | 64.07    | 30.77    | 338.66     | 68.39     |
+| ResNet              | 11.371M     | 71.28     | 13.34     | -3.27    | 8.48     | 202.82     | 37.78     |
+| DeepUNet            | 41.823M     | 73.8      | 15.77     | -2.2     | 13.35    | 212.8      | 40.86     |
+| Pix2Pix             | 44.588M     | 89.72     | 19.42     | 5.07     | 16.68    | 238.08     | 42.47     |
+| DenseUNet           | 49.518M     | 130.32    | 31.42     | 58.57    | 33.8     | 348.42     | 73.07     |
+| **SARU-Net (ours)** | **16.212M** | **62.61** | **11.26** | **9.77** | **7.84** | **183.04** | **30.26** |
 
 <div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/MAE_压缩后.png" width="600px" />
 <img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/BLtPk.jpg" width="600px" />
 <img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/L2bHi.jpg" width="600px" />
 </div>
+
 
 ## CBAM MODELS
 <div align=center>
