@@ -1,9 +1,5 @@
 # Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT
 
-> 注意：该项目还未完成。
->
-> Note: The project is not yet complete.
-
 <div align=center>
 <img src="https://img.shields.io/badge/Pytorch-1.10.1-green.svg"  />
 <img src="https://img.shields.io/badge/Python-3.9-blue.svg"  />
@@ -21,6 +17,20 @@
 <div align=center>
 <img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/saru_压缩后.png" width="800px" />
 </div>
+
+
+
+> 该项目还未完成。
+>
+> Note: The project is not yet complete.
+
+
+
+## Todo List:
+
+- SARU++
+- SARU
+- VNet/Unet/Resnet/pix2pix
 
 
 
@@ -64,8 +74,6 @@
 - Linux or macOS
 - Python 3
 - CPU or NVIDIA GPU + CUDA CuDNN
-
-All the models were trained on 2\*NVIDIA 12GB TITAN V.
 
 
 
@@ -116,7 +124,9 @@ root
 
 ## Pretrained weights
 
-We release a pretrained set of weights to allow reproducibility of our results. The weights are downloadable from [here](). Once downloaded, unpack the file in the root of the project and test them with the inference notebook.
+We release a pretrained set of weights to allow reproducibility of our results. The weights are downloadable from [Google Drive]()(or [百度云]()). Once downloaded, unpack the file in the root of the project and test them with the inference notebook.
+
+All the models were trained on 2\*NVIDIA 12GB TITAN V.
 
 
 
