@@ -33,6 +33,11 @@ if __name__ == '__main__':
     dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
     opt_test = TrainOptions().parse()
     opt_test.phase = "test"
+    opt_test.no_flip = True
+    opt_test.serial_batches = True
+    opt_test.num_threads = 0
+    opt_test.batch_size = 1
+    opt_test.preprocess = "none"
     test_dataset = create_dataset(opt_test)  # create a dataset given opt.dataset_mode and other options
     #test_dataset = 
     # n_train = int(len(dataset))
@@ -55,7 +60,7 @@ if __name__ == '__main__':
     total_iters = 0                # the total number of training iterations
     #print(model)
     best_score = 9999
-    
+    best_epoch = 0
     name = opt.name
     for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
         epoch_start_time = time.time()  # timer for entire epoch
@@ -103,9 +108,10 @@ if __name__ == '__main__':
         with open(f"./scores/{name}.txt","a") as f:
             f.write(str(epoch)+","+str(test_score)+"\n")  # 自带文件关闭功能，不需要再写f.close() 记得添加换行符！
 
-        print(f"Test Score:{test_score}. Best Score :{best_score}")
+        print(f"mean MAE:{test_score} HU. Min MAE :{best_score} in {best_epoch}")
         if test_score<best_score:
             best_score = test_score
+            best_epoch = epoch
             print(f"Saved Best!")
             model.save_networks('best')
         print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.n_epochs + opt.n_epochs_decay, time.time() - epoch_start_time))

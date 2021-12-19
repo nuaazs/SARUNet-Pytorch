@@ -248,10 +248,21 @@ class BaseModel(ABC):
 
                 with torch.no_grad():
                     mask_pred = net(imgs)
-
-                tot += criterion_pixelwise(mask_pred, true_masks).item() #*1800-1000
-                _n += 1
-                pbar.update(batch_size)
+                
+                
+                #print(mask_pred.shape)
+                for xx in range(mask_pred.shape[0]):
+                    #print(torch.max(mask_pred[xx,0,:,:]))
+                    fake_ct = mask_pred[xx,0,:,:]*1800-1000
+                    
+                    #fake_ct[fake_ct>1700] = 1700
+                    #fake_ct[fake_ct<-1000] = -1000
+                    real_ct = true_masks[xx,0,:,:]*1800-1000
+                    tot += criterion_pixelwise(fake_ct,real_ct ).item() #*1800-1000
+                    #print(mask_pred[xx,0,:,:].shape)
+                    _n += 1
+                pbar.update(mask_pred.shape[0])
 
         #net.train()
+        #print(_n)
         return tot / _n
