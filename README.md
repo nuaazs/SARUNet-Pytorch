@@ -1,4 +1,4 @@
-# Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT
+# SARU-Net: A Self Attention ResUnet to generate synthetic CT images for MRI-only BNCT treatment planning
 
 <div align=center>
 <img src="https://img.shields.io/badge/Pytorch-1.10.1-green.svg"  />
@@ -15,7 +15,7 @@
 <br>
 </div>
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/saru_压缩后.png" width="800px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/saru_mm_压缩后.png" width="800px" />
 </div>
 
 
@@ -37,17 +37,19 @@
 ## Table of Content
 
 
-- [Attn-UNet: A deep learning method for generating virtual CT from MRI for dose calculation of BNCT](#attn-unet-a-deep-learning-method-for-generating-virtual-ct-from-mri-for-dose-calculation-of-bnct)
+- [SARU-Net: A Self Attention ResUnet to generate synthetic CT images for MRI-only BNCT treatment planning](#saru-net-a-self-attention-resunet-to-generate-synthetic-ct-images-for-mri-only-bnct-treatment-planning)
+  - [Todo List:](#todo-list)
   - [Table of Content](#table-of-content)
   - [Preparation](#preparation)
     - [Environment setup](#environment-setup)
     - [Dataset preparation](#dataset-preparation)
   - [Pretrained weights](#pretrained-weights)
   - [Training](#training)
-  - [MAE Result](#mae-result)
+  - [MAE Result of 13 patients](#mae-result-of-13-patients)
   - [CBAM MODELS](#cbam-models)
     - [Spatial Attention](#spatial-attention)
     - [Channel Attention](#channel-attention)
+    - [Attention ResBlock](#attention-resblock)
   - [Code structure](#code-structure)
   - [Pull Request](#pull-request)
   - [Citation](#citation)
@@ -120,6 +122,8 @@ root
           ...
 ```
 
+Our pre-trained model used **130 + patient** cases, for a total of about 4500 image pairs, while performing data enhancement methods such as random flipping, random scaling, and random cropping.
+
 
 
 ## Pretrained weights
@@ -142,7 +146,7 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 
 
 
-## MAE Result
+## MAE Result of 13 patients
 
 | BackBone            | Params      | MEAN MAE  | STD       | MEAN ME  | STD      | MEAN RMSE  | STD       |
 | ------------------- | ----------- | --------- | --------- | -------- | -------- | ---------- | --------- |
@@ -176,6 +180,10 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 <div align=center>
 <img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/channel_压缩后.png" width="600px" />
 </div>
+### Attention ResBlock
+
+
+
 
 
 
