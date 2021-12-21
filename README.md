@@ -159,8 +159,23 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 
 <div align=center>
 <img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/MAE_压缩后.png" width="600px" />
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/BLtPk.jpg" width="600px" />
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/pics/L2bHi.jpg" width="600px" />
+</div>
+
+### SAG
+
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/geng07_001_sag_压缩后.png" width="900px" />
+</div>
+
+### COR
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/geng07_001_cor_压缩后.png" width="900px" />
+</div>
+
+
+### TRANS
+<div align=center>
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/geng07_001_trans_压缩后.png" width="900px" />
 </div>
 
 

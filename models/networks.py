@@ -28,7 +28,11 @@ from models_v2.VFN import VFN
 from models.ARUpp import ARUpp
 from models.ARUppp import ARUppp
 from models.SARU import SARU
+from models.saru2 import SARU2
+from models.saru3 import SARU3
+from models.saru4 import SARU4
 from models.SARUmm import SARUmm
+from models.SARUmmm import SARUmmm
 from models_v3.res_unet_regressor import CBAM_ResUNet_V3 as ARU
 # from models_v3.ARU_v2 import ARU_v2
 # from models.stylegan import StyleGAN
@@ -339,6 +343,14 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, ini
         net = SARU(input_nc, output_nc, 5, ngf, norm_layer=norm_layer)
     elif netG == 'SARU_mm':
         net = SARUmm(input_nc, output_nc, 5, ngf, norm_layer=norm_layer)
+    elif netG == 'SARU_mmm':
+        net = SARUmmm(input_nc, output_nc, 5, ngf, norm_layer=norm_layer)
+    elif netG == 'SARU2':
+        net = SARU2(input_nc, output_nc)
+    elif netG == 'SARU3':
+        net = SARU3(input_nc, output_nc)
+    elif netG == 'SARU4':
+        net = SARU4(input_nc, output_nc)
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
 

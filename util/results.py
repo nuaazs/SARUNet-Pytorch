@@ -94,7 +94,7 @@ class DataLoader(object):
         self.organs_list = ["soft_tissue","bone","air"]
         print(f"Generate {net_name} DataLoader")
         self.rpath = rpath
-
+        self.net_name = net_name
         self.SAVE_PATH = rpath+f"/{net_name}/" # this backbone's result
         self.ROOT = self.SAVE_PATH+f"/test_{epoch}/images/" # pngs
         self._change_dir()
@@ -338,12 +338,15 @@ class DataLoader(object):
         if plot_mode == "sag":
             fake_array = self.fake_B_array[:,:,int(n*c)]
             real_array = self.real_B_array[:,:,int(n*c)]
+            real_A_array = self.real_A_array[:,:,int(n*c)]
         elif plot_mode == "cor":
             fake_array = self.fake_B_array[:,int(n*b),:]
             real_array = self.real_B_array[:,int(n*b),:]
+            real_A_array = self.real_A_array[:,int(n*b),:]
         else:
             fake_array = self.fake_B_array[int(n*a),:,:]
             real_array = self.real_B_array[int(n*a),:,:]
+            real_A_array = self.real_A_array[int(n*a),:,:]
 
         im =plt.imshow(fake_array,cmap='gray')
         a1.set_aspect(ax_aspect)
@@ -383,5 +386,11 @@ class DataLoader(object):
         cb1.set_ticks([np.min(error_array),0,np.max(error_array)])
         cb1.update_ticks()
         plt.tight_layout()
-        #plt.savefig("./"+pat_num+"_"+MODE+".jpg")
+        plt.savefig(self.rpath+"/pictures/"+self.net_name+"_"+self.pname+"_"+plot_mode+".png")
+        plt.show()
+        
+        plt.figure(dpi=200)
+        plt.axis('off')
+        plt.imshow(real_A_array,cmap='gray')
+        plt.savefig(self.rpath+"/pictures/"+self.net_name+"_"+self.pname+"_MRI.png")
         plt.show()
