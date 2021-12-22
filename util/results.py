@@ -13,7 +13,6 @@
 # @Describe: Analysis of neural network results (mri-ct project)
 
 import os
-import numpy as np
 from PIL import Image
 import SimpleITK as sitk
 import matplotlib
@@ -21,10 +20,18 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib import colors
 from sklearn.metrics import mean_squared_error, r2_score
-import numpy as np 
+import matplotlib.pyplot as plt
+from glob import glob
+from os import listdir
+from os.path import splitext
+import nibabel as nb
+import nibabel as nib
+import numpy as np
+from nibabel.viewers import OrthoSlicer3D
+import scipy.io as io
 
 
-
+    
 def shiftedColorMap(cmap, start=0, midpoint=0.5, stop=1.0, name='shiftedcmap'):
     '''
     Function to offset the "center" of a colormap. Useful for
@@ -279,16 +286,163 @@ class DataLoader(object):
         return np.array(np_list),nii
     
 
-    def save_nii(self,root_path='./'):
+    def save_nii(self,root_path='./',txt_path='./',save_txt=True):
         """AI is creating summary for save_nii
 
         Args:
             root_path (str, optional): [description]. Defaults to './'.
         """
-        sitk.WriteImage(self.real_B_nii,os.path.join(root_path,self.pname+"_real_B_out.nii"))
-        sitk.WriteImage(self.real_A_nii,os.path.join(root_path,self.pname+"_real_A_out.nii"))
-        sitk.WriteImage(self.fake_B_nii,os.path.join(root_path,self.pname+"_fake_B_out.nii"))
+        os.makedirs(os.path.join(root_path,"output_nii"),exist_ok=True)
+        sitk.WriteImage(self.real_B_nii,os.path.join(root_path,"output_nii",self.pname+"_real_B_out.nii"))
+        sitk.WriteImage(self.real_A_nii,os.path.join(root_path,"output_nii",self.pname+"_real_A_out.nii"))
+        sitk.WriteImage(self.fake_B_nii,os.path.join(root_path,"output_nii",self.pname+"_fake_B_out.nii"))
  
+        if save_txt:
+
+            ct_array = self.fake_B_array.copy()
+
+            hu_list = [-999999,-950,-120,-88,-53,-23,7,18,80,120,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,99999999]
+            for i in range(ct_array.shape[0]):
+                for j in range(ct_array.shape[1]):
+                    for k in range(ct_array.shape[2]):
+                        if ct_array[i,j,k]<-950:
+                            ct_array[i,j,k]=1
+                        elif ct_array[i,j,k]<-120:
+                            ct_array[i,j,k]=2
+                        elif ct_array[i,j,k]<-88:
+                            ct_array[i,j,k]=3
+                        elif ct_array[i,j,k]<-53:
+                            ct_array[i,j,k]=4
+                        elif ct_array[i,j,k]<-23:
+                            ct_array[i,j,k]=5
+                        elif ct_array[i,j,k]<7:
+                            ct_array[i,j,k]=6
+                        elif ct_array[i,j,k]<18:
+                            ct_array[i,j,k]=7
+                        elif ct_array[i,j,k]<80:
+                            ct_array[i,j,k]=8
+                        elif ct_array[i,j,k]<120:
+                            ct_array[i,j,k]=9
+                        elif ct_array[i,j,k]<200:
+                            ct_array[i,j,k]=10
+                        elif ct_array[i,j,k]<300:
+                            ct_array[i,j,k]=11
+                        elif ct_array[i,j,k]<400:
+                            ct_array[i,j,k]=12
+                        elif ct_array[i,j,k]<500:
+                            ct_array[i,j,k]=13
+                        elif ct_array[i,j,k]<600:
+                            ct_array[i,j,k]=14
+                        elif ct_array[i,j,k]<700:
+                            ct_array[i,j,k]=15
+                        elif ct_array[i,j,k]<800:
+                            ct_array[i,j,k]=16
+                        elif ct_array[i,j,k]<900:
+                            ct_array[i,j,k]=17
+                        elif ct_array[i,j,k]<1000:
+                            ct_array[i,j,k]=18
+                        elif ct_array[i,j,k]<1100:
+                            ct_array[i,j,k]=19
+                        elif ct_array[i,j,k]<1200:
+                            ct_array[i,j,k]=20
+                        elif ct_array[i,j,k]<1300:
+                            ct_array[i,j,k]=21
+                        elif ct_array[i,j,k]<1400:
+                            ct_array[i,j,k]=22
+                        elif ct_array[i,j,k]<1500:
+                            ct_array[i,j,k]=23
+                        elif ct_array[i,j,k]<1600:
+                            ct_array[i,j,k]=24
+                        else:
+                            ct_array[i,j,k]=25
+
+            _x,_y,_z = ct_array.shape
+            _array = ct_array
+
+            number = 25
+            array1 = _array.transpose(2,0,1).copy().flatten()
+            _num = int(len(array1)/number)+1
+            new_array = np.pad(array1,(0,_num*number-len(array1)),'constant', constant_values=(999,999))
+            new_array = new_array.reshape(-1,number)
+
+            with open(os.path.join(txt_path,self.pname+"_"+self.net_name), 'a') as f4:
+                np.savetxt(f4, new_array, delimiter=' ', newline='\n     ',fmt="%i")
+
+    def save_real_ct_txt(self,txt_path='./'):
+
+
+
+
+        ct_array = self.real_B_array.copy()
+
+        hu_list = [-999999,-950,-120,-88,-53,-23,7,18,80,120,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,99999999]
+        for i in range(ct_array.shape[0]):
+            for j in range(ct_array.shape[1]):
+                for k in range(ct_array.shape[2]):
+                    if ct_array[i,j,k]<-950:
+                        ct_array[i,j,k]=1
+                    elif ct_array[i,j,k]<-120:
+                        ct_array[i,j,k]=2
+                    elif ct_array[i,j,k]<-88:
+                        ct_array[i,j,k]=3
+                    elif ct_array[i,j,k]<-53:
+                        ct_array[i,j,k]=4
+                    elif ct_array[i,j,k]<-23:
+                        ct_array[i,j,k]=5
+                    elif ct_array[i,j,k]<7:
+                        ct_array[i,j,k]=6
+                    elif ct_array[i,j,k]<18:
+                        ct_array[i,j,k]=7
+                    elif ct_array[i,j,k]<80:
+                        ct_array[i,j,k]=8
+                    elif ct_array[i,j,k]<120:
+                        ct_array[i,j,k]=9
+                    elif ct_array[i,j,k]<200:
+                        ct_array[i,j,k]=10
+                    elif ct_array[i,j,k]<300:
+                        ct_array[i,j,k]=11
+                    elif ct_array[i,j,k]<400:
+                        ct_array[i,j,k]=12
+                    elif ct_array[i,j,k]<500:
+                        ct_array[i,j,k]=13
+                    elif ct_array[i,j,k]<600:
+                        ct_array[i,j,k]=14
+                    elif ct_array[i,j,k]<700:
+                        ct_array[i,j,k]=15
+                    elif ct_array[i,j,k]<800:
+                        ct_array[i,j,k]=16
+                    elif ct_array[i,j,k]<900:
+                        ct_array[i,j,k]=17
+                    elif ct_array[i,j,k]<1000:
+                        ct_array[i,j,k]=18
+                    elif ct_array[i,j,k]<1100:
+                        ct_array[i,j,k]=19
+                    elif ct_array[i,j,k]<1200:
+                        ct_array[i,j,k]=20
+                    elif ct_array[i,j,k]<1300:
+                        ct_array[i,j,k]=21
+                    elif ct_array[i,j,k]<1400:
+                        ct_array[i,j,k]=22
+                    elif ct_array[i,j,k]<1500:
+                        ct_array[i,j,k]=23
+                    elif ct_array[i,j,k]<1600:
+                        ct_array[i,j,k]=24
+                    else:
+                        ct_array[i,j,k]=25
+
+        _x,_y,_z = ct_array.shape
+        _array = ct_array
+
+        number = 25
+        
+        array1 = _array.transpose(2,0,1).copy().flatten()
+        _num = int(len(array1)/number)+1
+        new_array = np.pad(array1,(0,_num*number-len(array1)),'constant', constant_values=(999,999))
+        new_array = new_array.reshape(-1,number)
+
+        with open(os.path.join(txt_path,self.pname+"_"+self.net_name)+"_real_CT", 'a') as f4:
+            np.savetxt(f4, new_array, delimiter=' ', newline='\n     ',fmt="%i")
+                
     def load_nii(self,pname):
         """AI is creating summary for load_nii
 

@@ -33,13 +33,13 @@ class SmaAt_UNet(nn.Module):
 
     def forward(self, x):
         x1 = self.inc(x)
-        x1Att = self.cbam1(x1)
+        x1Att = self.cbam1(x1)+x1
         x2 = self.down1(x1)
-        x2Att = self.cbam2(x2)
+        x2Att = self.cbam2(x2)+x2
         x3 = self.down2(x2)
-        x3Att = self.cbam3(x3)
+        x3Att = self.cbam3(x3)+x3
         x4 = self.down3(x3)
-        x4Att = self.cbam4(x4)
+        x4Att = self.cbam4(x4)+x4
         x5 = self.down4(x4)
         x5Att = self.cbam5(x5)
         x = self.up1(x5Att, x4Att)

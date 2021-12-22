@@ -51,16 +51,27 @@ class DownDS(nn.Module):
         super().__init__()
         self.maxpool_conv = nn.Sequential(
             nn.MaxPool2d(2),
-            DoubleConvDS(in_channels, out_channels,
+            DoubleConvDS(in_channels, out_channels//2,
+                         kernels_per_layer=kernels_per_layer),
+            DoubleConvDS(out_channels//2, out_channels,
                          kernels_per_layer=kernels_per_layer)
         )
 
     def forward(self, x):
         return self.maxpool_conv(x)
 
+class UpDS(nn.Module):
+    def __init__(self, in_channels, out_channels, kernels_per_layer=1):
+        super().__init__()
+        self.maxpool_conv = nn.Sequential(
+            DoubleConvDS(in_channels, out_channels,kernels_per_layer=kernels_per_layer),
+        )
+
+    def forward(self, x):
+        return self.maxpool_conv(x)
 
 class SARU(nn.Module):
-    def __init__(self, input_nc, output_nc, num_downs, ngf=64, norm_layer=nn.BatchNorm2d):
+    def __init__(self, input_nc, output_nc, num_downs, ngf=64, norm_layer=nn.BatchNorm2d,addtional_n=0):
         super(SARU, self).__init__()
         unet_block = UnetSkipConnectionBlock(
             ngf * 8, ngf * 8, input_nc=None, submodule=None, norm_layer=norm_layer, innermost=True)
@@ -99,7 +110,8 @@ class UnetSkipConnectionBlock(nn.Module):
         downnorm = norm_layer(inner_nc)
         uprelu = nn.ReLU(True)
         upnorm = norm_layer(outer_nc)
-
+        upDS = UpDS(outer_nc, outer_nc)
+        
         if outermost:
             upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc,
                                         kernel_size=4, stride=2,
@@ -112,15 +124,15 @@ class UnetSkipConnectionBlock(nn.Module):
                                         kernel_size=4, stride=2,
                                         padding=1, bias=use_bias)
             down = [downrelu, downconv]
-            up = [uprelu, upconv, upnorm]
+            up = [uprelu, upconv, upnorm,uprelu, upDS,upnorm]
             model = down + up
         else:
             upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc,
                                         kernel_size=4, stride=2,
                                         padding=1, bias=use_bias)
-            down = [downrelu, downDS, downnorm]
-            up = [uprelu, upconv, upnorm]
-            model = down + [submodule] + up + [nn.Dropout(0.5)]
+            down = [downrelu, downDS, downnorm] # 
+            up = [uprelu, upconv, upnorm,uprelu, upDS,upnorm]
+            model = down + [submodule] + up
         self.model = nn.Sequential(*model)
 
     def forward(self, x):

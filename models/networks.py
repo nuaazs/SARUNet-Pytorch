@@ -338,9 +338,9 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, ini
     elif netG == 'ARU':
         net = ARU(input_nc, output_nc)
     elif netG == 'SARU':
-        net = SARU(input_nc, output_nc, 6, ngf, norm_layer=norm_layer)
+        net = SARU(input_nc, output_nc, addtional_n=0, num_downs=5, ngf=64, norm_layer=norm_layer)
     elif netG == 'SARU_min':
-        net = SARU(input_nc, output_nc, 5, ngf, norm_layer=norm_layer)
+        net = SARU(input_nc, output_nc, addtional_n=0, num_downs=5, ngf=64, norm_layer=norm_layer)
     elif netG == 'SARU_mm':
         net = SARUmm(input_nc, output_nc, 5, ngf, norm_layer=norm_layer)
     elif netG == 'SARU_mmm':
