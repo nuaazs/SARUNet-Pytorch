@@ -58,7 +58,7 @@ class BaseOptions():
         parser.add_argument('--style_loss', action='store_true', help='use style_loss or not')
         #parser.add_argument('--continue_train', default=0, type=int, help='')
         parser.add_argument('--filetype', default='img', type=str)
-
+        parser.add_argument('--dream', type=float, default=0.0, help='then crop to this size')
         self.initialized = True
         return parser
 
