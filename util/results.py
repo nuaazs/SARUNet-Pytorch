@@ -286,16 +286,16 @@ class DataLoader(object):
         return np.array(np_list),nii
     
 
-    def save_nii(self,root_path='./',txt_path='./',save_txt=True):
+    def save_nii(self,root_path='./',txt_path='./',save_txt=False):
         """AI is creating summary for save_nii
 
         Args:
             root_path (str, optional): [description]. Defaults to './'.
         """
         os.makedirs(os.path.join(root_path,"output_nii"),exist_ok=True)
-        sitk.WriteImage(self.real_B_nii,os.path.join(root_path,"output_nii",self.pname+"_real_B_out.nii"))
-        sitk.WriteImage(self.real_A_nii,os.path.join(root_path,"output_nii",self.pname+"_real_A_out.nii"))
-        sitk.WriteImage(self.fake_B_nii,os.path.join(root_path,"output_nii",self.pname+"_fake_B_out.nii"))
+        sitk.WriteImage(self.real_B_nii,os.path.join(root_path,"output_nii",self.pname+"_real.nii"))
+        sitk.WriteImage(self.real_A_nii,os.path.join(root_path,"output_nii",self.pname+"_mri.nii"))
+        sitk.WriteImage(self.fake_B_nii,os.path.join(root_path,"output_nii",self.pname+"_fake.nii"))
  
         if save_txt:
 
