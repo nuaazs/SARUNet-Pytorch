@@ -286,7 +286,7 @@ class DataLoader(object):
         return np.array(np_list),nii
     
 
-    def save_nii(self,root_path='./',txt_path='./',save_txt=False):
+    def save_nii(self,root_path='./',txt_path='./',save_txt=False,save_mat=False):
         """AI is creating summary for save_nii
 
         Args:
@@ -297,6 +297,10 @@ class DataLoader(object):
         sitk.WriteImage(self.real_A_nii,os.path.join(root_path,"output_nii",self.pname+"_mri.nii"))
         sitk.WriteImage(self.fake_B_nii,os.path.join(root_path,"output_nii",self.pname+"_fake.nii"))
  
+
+        self._nii_to_mat(os.path.join(root_path,"output_nii",self.pname+"_real.nii"),os.path.join(root_path,"output_nii",self.pname+"_real.mat"))
+        self._nii_to_mat(os.path.join(root_path,"output_nii",self.pname+"_fake.nii"),os.path.join(root_path,"output_nii",self.pname+"_fake.mat"))
+        
         if save_txt:
 
             ct_array = self.fake_B_array.copy()
@@ -466,6 +470,76 @@ class DataLoader(object):
         self.me = self._get_me()
         # self.organs_mae = self._get_organs_mae()
 
+
+    def _nii_to_mat(self,nii_file_path,mat_file_path):
+
+        """输入CT的nii文件地址nii_file_path，读取里面的数组并按照CT值分成不同的类别,生成mat格式文件保存在mat_file_path
+        :param nii_file_path: CT的nii文件地址.
+        :param mat_file_path: 生成的mat文件的保存地址.
+        :return: 
+        """
+        img = nb.load(nii_file_path)
+
+        ct_array = np.asanyarray(img.dataobj)
+        ct_array = np.array(ct_array)
+        hu_list = [-999999,-950,-120,-88,-53,-23,7,18,80,120,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,99999999]
+
+        for i in range(ct_array.shape[0]):
+            for j in range(ct_array.shape[1]):
+                for k in range(ct_array.shape[2]):
+
+                    if ct_array[i,j,k]<-950:
+                        ct_array[i,j,k]=1
+                    elif ct_array[i,j,k]<-120:
+                        ct_array[i,j,k]=2
+                    elif ct_array[i,j,k]<-88:
+                        ct_array[i,j,k]=3
+                    elif ct_array[i,j,k]<-53:
+                        ct_array[i,j,k]=4
+                    elif ct_array[i,j,k]<-23:
+                        ct_array[i,j,k]=5
+                    elif ct_array[i,j,k]<7:
+                        ct_array[i,j,k]=6
+                    elif ct_array[i,j,k]<18:
+                        ct_array[i,j,k]=7
+                    elif ct_array[i,j,k]<80:
+                        ct_array[i,j,k]=8
+                    elif ct_array[i,j,k]<120:
+                        ct_array[i,j,k]=9
+                    elif ct_array[i,j,k]<200:
+                        ct_array[i,j,k]=10
+                    elif ct_array[i,j,k]<300:
+                        ct_array[i,j,k]=11
+                    elif ct_array[i,j,k]<400:
+                        ct_array[i,j,k]=12
+                    elif ct_array[i,j,k]<500:
+                        ct_array[i,j,k]=13
+                    elif ct_array[i,j,k]<600:
+                        ct_array[i,j,k]=14
+                    elif ct_array[i,j,k]<700:
+                        ct_array[i,j,k]=15
+                    elif ct_array[i,j,k]<800:
+                        ct_array[i,j,k]=16
+                    elif ct_array[i,j,k]<900:
+                        ct_array[i,j,k]=17
+                    elif ct_array[i,j,k]<1000:
+                        ct_array[i,j,k]=18
+                    elif ct_array[i,j,k]<1100:
+                        ct_array[i,j,k]=19
+                    elif ct_array[i,j,k]<1200:
+                        ct_array[i,j,k]=20
+                    elif ct_array[i,j,k]<1300:
+                        ct_array[i,j,k]=21
+                    elif ct_array[i,j,k]<1400:
+                        ct_array[i,j,k]=22
+                    elif ct_array[i,j,k]<1500:
+                        ct_array[i,j,k]=23
+                    elif ct_array[i,j,k]<1600:
+                        ct_array[i,j,k]=24
+                    else:
+                        ct_array[i,j,k]=25
+        io.savemat(mat_file_path, {'name': ct_array})
+        print("to mat done!")
     def plot(self,plot_mode):
         """AI is creating summary for plot
 
