@@ -12,44 +12,50 @@
 # @File    : DVH.py
 # @Describe: Get DVH from the dose results of MC(mcnp/topas/G4).
 
-import os
-import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io as scio
-from glob import glob
-import numpy as np
-import matplotlib.pyplot as plt
-import os
 import nibabel as nb
 import numpy as np
+import os
 
 class DVH(object):
     """Get DVH from the dose results of MC."""
-
-
-    def __init__(self,MC_out_file_path,organs_list,organs_path="/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/seg/",pname="001",filetype="csv"):
+    def __init__(self,MC_out_file_path,
+                 organs_list,
+                 organs_path="/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/seg/",
+                 pname="001",
+                 filetype="csv",
+                 #shape=(256,256,180),
+                 root_path="/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/"
+                 ):
         """ Init fun. Get `organs_array_dict` and xxx_dose array.
 
         Args:
             MC_out_file_path ([str]): [The path to the output file]
             organs_list ([str list]): [organ's name list]
         """
-
         self.organs = organs_list
         self.pname = pname
         self.organs_array_dict = {}
-        self.organs_dvh_dict = {}
+        self.organs_dvh_dict_real = {}
+        self.organs_dvh_dict_fake = {}
+        # self.shape=shape
         self.organs_path = organs_path
+        self.root_path = root_path
+        self.D_info = {}
+        img = nb.load(os.path.join(self.root_path,f"{pname}/output_nii/{pname}_real.nii"))
+        ct_array = np.asanyarray(img.dataobj)
+        self.ct = np.array(ct_array)
+        
         for organ in organs_list:
             print(f"Now {organ}.")
             self.organs_array_dict[organ] = self._get_organ_array(organ,self.pname)
         if filetype=="csv":
-            self.total_dose_real,self.total_dose_fake = self._get_dose_array(MC_out_file_path)
+            self.total_dose_real,self.total_dose_fake = self._get_dose_array_from_csv(MC_out_file_path)
         elif filetype == "mat":
-            self.total_dose = self._get_dose_array_from_mat(MC_out_file_path) # , self.boron_dose, self.fast_n_dose, self.N_dose
+            self.total_dose_real,self.total_dose_fake = self._get_dose_array_from_mat(MC_out_file_path)
         else:
             print("Error filetype.")
-
 
     def _array_from_MC(self,MC_OUT_FILE,mode="txt"):
         """Get a two-dimensional numpy array from the output file
@@ -64,20 +70,22 @@ class DVH(object):
             if os.path.isfile(MC_OUT_FILE[:-4]+".npy"):
                 filename_ = MC_OUT_FILE[:-4]+".npy"
                 print(f"\t->Loading npy file : {filename_}")
-                return np.load(filename_)
+                array_ = np.load(filename_)
+                print(f"\t->Shape:{array_.shape}")
+                return array_
 
             print(f"\t->Reading MC output file : {MC_OUT_FILE}")
             with open(MC_OUT_FILE,encoding = 'utf-8') as f:
                 data = np.loadtxt(f,delimiter = ",", skiprows = 8)
-            output = data[:,3].reshape(256,256,187).transpose(2,0,1)
+            output = data[:,3].reshape(256,256,-1).transpose(2,0,1)
             np.save(MC_OUT_FILE[:-4],output)
             print(f"\t->Saving MC output file : {MC_OUT_FILE}")
+            print(f"\t->Shape:{output.shape}")
             return output
 
         if mode == "mat":
             data = scio.loadmat(MC_OUT_FILE)
             return data[[ky for ky in data.keys() if "_" not in ky][0]].transpose(2,0,1)
-
 
     def _get_organ_array(self,organ,pname):
         """Get a mask for the specified organ.
@@ -90,9 +98,7 @@ class DVH(object):
         """
         return self._get_array(self.organs_path,pname+"_"+organ)
 
-
-
-    def _get_dose_array(self,outpath):
+    def _get_dose_array_from_csv(self,outpath):
         """Get total dose array, and Boron/fast n/gamma/nitrogen dose.
 
         Args:
@@ -115,14 +121,10 @@ class DVH(object):
         self.fast_array_fake = self._array_from_MC(os.path.join(outpath,"fast_fake.csv"))
         self.gamma_array_fake = self._array_from_MC(os.path.join(outpath,"gamma_fake.csv"))
         self.nitrogen_array_fake = self._array_from_MC(os.path.join(outpath,"nitrogen_fake.csv"))
-        img = nb.load("/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/001/output_nii/001_real.nii")
-        ct_array = np.asanyarray(img.dataobj)
-        self.ct = np.array(ct_array)
+        
         #self.ct = self._get_organ_array("ct")
         
         self.gtv = self._get_organ_array("gtv",self.pname)
-#         self.ssj_l = self._get_organ_array("ssj_l",self.pname)
-#         self.ssj_r = self._get_organ_array("ssj_r",self.pname)
         self.lens_l = self._get_organ_array("lens_l",self.pname)
         self.lens_r = self._get_organ_array("lens_r",self.pname)
         
@@ -169,13 +171,7 @@ class DVH(object):
         print(self.boron_array.shape)
         print(self.proton_array.shape)
         print(self.boron_array.shape)
-        img = nb.load("/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/001/output_nii/001_real.nii")
-        ct_array = np.asanyarray(img.dataobj)
-        ct = np.array(ct_array)
 
-        print(ct.shape)
-        #self.ct = self._get_organ_array("ct")
-        self.ct = ct
         self.gtv = self._get_organ_array("gtv",self.pname)
         total_dose= np.zeros(self.ct.shape)
         total_dose[self.ct<-999] = self.boron_array[self.ct<-999]*xx* \
@@ -190,16 +186,26 @@ class DVH(object):
                     + self.gamma_array[self.gtv==1]*xx
         return total_dose
 
-    def _get_dvh_data(self,dose):
+    def _get_dvh_data(self,dose,mode="real"):
         """Get dvh information for all organs and save it in a dictionary.
         """
+        
         for organ_name in self.organs:
             print(organ_name)
-            xy_list = self._get_organ_dvh(self.organs_array_dict[organ_name],dose)
-            xy_list.append(organ_name) ## [xx,yy,label]
-            self.organs_dvh_dict[organ_name] = xy_list
-        return 0
+            xy_list,D_info = self._get_organ_dvh(self.organs_array_dict[organ_name],dose)
 
+            print(f"Mode:{mode} and D_info:\n")
+            print(D_info)
+            self.D_info[organ_name+"_"+mode] = D_info
+            xy_list.append(organ_name) ## [xx,yy,label]
+            if mode == "real":
+                self.organs_dvh_dict_real[organ_name] = xy_list
+            elif mode == "fake":
+                self.organs_dvh_dict_fake[organ_name] = xy_list
+            else:
+                print("!! Error mode in _get_dvh_data.")
+        return 0
+    
     def _get_organ_dvh(self,organ_array,dose):
         """Obtain the curve x, y coordinate value (1,000 points)
             of the DVH of the organ.
@@ -222,37 +228,97 @@ class DVH(object):
         xx = np.linspace(0,max_dose,1001)
         xx = xx[:1000]
         yy = []
+
+        notfindD95,notfindD100,notfindD0 = True,True,True
         for x in xx:
-            yy.append(len(out_dose[out_dose>x]) / len(organ_array[organ_array>0]))
+            y_value = len(out_dose[out_dose>x]) / len(organ_array[organ_array>0])
+            if y_value<0.95 and notfindD95:
+                D95 = x
+                notfindD95 = False
+            if y_value<0.99 and notfindD100:
+                D100 = x
+                notfindD100 = False
+            if y_value<0.01 and notfindD0:
+                D0 = x
+                notfindD0 = False
+            yy.append(y_value)
+            
+
         xx= xx.tolist()
         yy[-1]=0
-        return [xx,yy]
+        D_info = {"D95":D95,"D100":D100,"D0":D0}
+        return [xx,yy],D_info
 
+    def plot_dvh(self,reload=False):
+        colors = [
+          "green",
+          "sienna",
+          "firebrick",
+          "darkmagenta",
+    
+          "darkblue",
+          "peru",
+          "teal",
+          "slategrey",
+          "darkkhaki",
+          "C",
+          "gold",
+          "olive"]
 
-    def plot_dvh(self):
-        """Visualize the dvh diagram of the organs
-        """
+        organ_labels  = {"lens_l":"Lens(L)",
+                 "lens_r":"Lens(L)",
+                 "ssj_l":"ON(L)",
+                 "ssj_r":"ON(R)",
+                 "brain":"Brain",
+                 "brainstem":"BrainStem",
+                 "gtv":"GTV",
+                 "skull":"Skull",
+                 "soft_tissue":"Soft tissue",
+                 "bone":"Bone",
+                 "air":"Air"}
         
-        plt.figure(dpi=150)
-        
-        self._get_dvh_data(self.total_dose_real)
-        for organ_name in self.organs_array_dict.keys():
-            _dvh_info = self.organs_dvh_dict[organ_name]
-            plt.plot(_dvh_info[0],_dvh_info[1],label=_dvh_info[2],linewidth=1)
+        plt.style.use('ggplot')
+        fg=plt.figure(dpi=200)
+        ax=fg.add_subplot(1,1,1)
+        fake_cache = f"/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/dose/{self.pname}/fake_dvh.npy"
+        real_cache = f"/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/dose/{self.pname}/real_dvh.npy"
+        dvh_cache = f"/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/dose/{self.pname}/dvh.npy"
+        if reload or (not (os.path.isfile(real_cache))):
+            self._get_dvh_data(self.total_dose_real,mode="real")
+            np.save(real_cache, self.organs_dvh_dict_real)
+        if reload or (not (os.path.isfile(fake_cache))):
+            self._get_dvh_data(self.total_dose_fake,mode="fake")
+            np.save(fake_cache, self.organs_dvh_dict_fake)
+        if reload or (not (os.path.isfile(dvh_cache))):
+            self._get_dvh_data(self.total_dose_real,mode="real")
+            self._get_dvh_data(self.total_dose_fake,mode="fake")
+            np.save(real_cache, self.organs_dvh_dict_real)
+            np.save(fake_cache, self.organs_dvh_dict_fake)
+            np.save(dvh_cache, self.D_info)
 
-        self._get_dvh_data(self.total_dose_fake)
-        for organ_name in self.organs_array_dict.keys():
-            _dvh_info = self.organs_dvh_dict[organ_name]
-            plt.plot(_dvh_info[0],_dvh_info[1],label=_dvh_info[2],linewidth=1)
+        self.organs_dvh_dict_real = np.load(real_cache,allow_pickle=True).item()
+        self.organs_dvh_dict_fake = np.load(fake_cache,allow_pickle=True).item()
+        self.D_info = np.load(dvh_cache,allow_pickle=True).item()
 
-        plt.legend()
-        plt.xlabel("Dose(Gy)")
-        plt.ylabel("Ratio of total structure volume(%)")
-        plt.title("DVH")
-        plt.savefig("./dvh.png")
+        for idx,organ_name in enumerate(self.organs_array_dict.keys()):
+            _dvh_info_real = self.organs_dvh_dict_real[organ_name]
+            ax.plot(_dvh_info_real[0],_dvh_info_real[1],linewidth=2,color=colors[idx],linestyle='-',label=organ_labels[organ_name]+" Real")
+
+            
+            _dvh_info_fake = self.organs_dvh_dict_fake[organ_name]
+            ax.plot(_dvh_info_fake[0],_dvh_info_fake[1],linewidth=2,color=colors[idx],linestyle=':',label=organ_labels[organ_name]+" Fake")
+            # label=_dvh_info_fake[2],
+        ax.set_xlabel("Dose(Gy)")
+        ax.set_ylabel("Ratio of total structure volume(%)")
+
+        #plt.legend()
+        plt.title("Dose-Volume Histogram")
+        plt.savefig(f"./{self.pname}_DVH.png")
         plt.show()
-        return 0
 
+        print("DVH info:")
+        print(self.D_info)
+        return 0
 
     def _get_array(self,fold,name):
         """Under the specified directory, read the specified numpy file.
@@ -272,18 +338,4 @@ if __name__ == "__main__":
     mcnp_output_path = "/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/dose/001/"
     dvh = DVH(mcnp_output_path,["lens_l","lens_r","gtv","brain","skull"]) #
     print(f"Total Dose Shape:{dvh.total_dose_real.shape}")
-#     plt.figure()
-#     plt.imshow(dvh.total_dose[100])
-#     plt.title("Total Dose")
-#     plt.axis('off')
-#     plt.colorbar()
-#     plt.show()
-
-#     plt.figure()
-#     plt.imshow(dvh.boron_dose)
-#     plt.title("Boron Dose")
-#     plt.axis('off')
-#     plt.colorbar()
-#     plt.show()
-
     dvh.plot_dvh()
