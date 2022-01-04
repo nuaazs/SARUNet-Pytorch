@@ -21,11 +21,12 @@ import os
 class DVH(object):
     """Get DVH from the dose results of MC."""
     def __init__(self,MC_out_file_path,
-                 organs_list,
+                 organs_list=["lens_l","lens_r","gtv","brain","skull","ssj_l","ssj_r","skin"],
                  organs_path="/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/seg/",
                  pname="001",
                  filetype="csv",
                  #shape=(256,256,180),
+                 redundancy=True,
                  root_path="/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/"
                  ):
         """ Init fun. Get `organs_array_dict` and xxx_dose array.
@@ -36,17 +37,19 @@ class DVH(object):
         """
         self.organs = organs_list
         self.pname = pname
+        self.nowmode = "" #
         self.organs_array_dict = {}
         self.organs_dvh_dict_real = {}
         self.organs_dvh_dict_fake = {}
         # self.shape=shape
+        self.redundancy = redundancy
         self.organs_path = organs_path
         self.root_path = root_path
         self.D_info = {}
         img = nb.load(os.path.join(self.root_path,f"{pname}/output_nii/{pname}_real.nii"))
         ct_array = np.asanyarray(img.dataobj)
         self.ct = np.array(ct_array)
-        
+
         for organ in organs_list:
             print(f"Now {organ}.")
             self.organs_array_dict[organ] = self._get_organ_array(organ,self.pname)
@@ -96,6 +99,9 @@ class DVH(object):
         Returns:
             [array]: [mask for the specified organ]
         """
+
+        if organ == "skin":
+            organ = "skin_"+self.nowmode
         return self._get_array(self.organs_path,pname+"_"+organ)
 
     def _get_dose_array_from_csv(self,outpath):
@@ -121,27 +127,53 @@ class DVH(object):
         self.fast_array_fake = self._array_from_MC(os.path.join(outpath,"fast_fake.csv"))
         self.gamma_array_fake = self._array_from_MC(os.path.join(outpath,"gamma_fake.csv"))
         self.nitrogen_array_fake = self._array_from_MC(os.path.join(outpath,"nitrogen_fake.csv"))
-        
+
         #self.ct = self._get_organ_array("ct")
-        
+
         self.gtv = self._get_organ_array("gtv",self.pname)
+
+        # real
+        self.nowmode = "real"
+        self.skin_real = self._get_organ_array("skin",self.pname)
+
+
+        # fake
+        self.nowmode = "fake"
+        self.skin_fake = self._get_organ_array("skin",self.pname)
+
+
         self.lens_l = self._get_organ_array("lens_l",self.pname)
         self.lens_r = self._get_organ_array("lens_r",self.pname)
-        
+
+
         boron_concentration = np.zeros(self.ct.shape)+18*1.4
-        print(boron_concentration.shape)
+        if self.redundancy:
+            print(boron_concentration.shape)
         boron_concentration[self.gtv==1]=60*3.8
-        #boron_concentration[self.skin==1]=25*2.5
+
         boron_concentration[self.ct<-999]=0 # 空气
         boron_concentration[self.lens_r==1]=10*1.4
         boron_concentration[self.lens_l==1]=10*1.4
-        
-        
+
+        # real
+        boron_concentration[self.skin_fake==1]=18*1.4
+        boron_concentration[self.skin_real==1]=25*2.5
+        boron_concentration[self.gtv==1]=60*3.8
+        boron_concentration[self.lens_r==1]=10*1.4
+        boron_concentration[self.lens_l==1]=10*1.4
+        boron_concentration[self.ct<-999]=0 # 空气
         boron_dose_real = self.boron_array_real*boron_concentration*xx
         gamma_dose_real = self.gamma_array_real*xx
         proton_dose_real = (self.fast_array_real+self.nitrogen_array_real)*3.2*xx
         total_dose_real=boron_dose_real+gamma_dose_real+proton_dose_real
 
+        # fake
+        boron_concentration[self.skin_real==1]=18*1.4
+        boron_concentration[self.skin_fake==1]=25*2.5
+        boron_concentration[self.gtv==1]=60*3.8
+        boron_concentration[self.lens_r==1]=10*1.4
+        boron_concentration[self.lens_l==1]=10*1.4
+        boron_concentration[self.ct<-999]=0 # 空气
         boron_dose_fake = self.boron_array_fake*boron_concentration*xx
         gamma_dose_fake = self.gamma_array_fake*xx
         proton_dose_fake = (self.fast_array_fake+self.nitrogen_array_fake)*3.2*xx
@@ -167,10 +199,10 @@ class DVH(object):
         self.boron_array = self._array_from_MC(os.path.join(outpath,"boron.mat"),mode="mat")
         self.proton_array = self._array_from_MC(os.path.join(outpath,"proton.mat"),mode="mat")
         self.gamma_array = self._array_from_MC(os.path.join(outpath,"gamma.mat"),mode="mat")
-
-        print(self.boron_array.shape)
-        print(self.proton_array.shape)
-        print(self.boron_array.shape)
+        if self.redundancy:
+            print(self.boron_array.shape)
+            print(self.proton_array.shape)
+            print(self.boron_array.shape)
 
         self.gtv = self._get_organ_array("gtv",self.pname)
         total_dose= np.zeros(self.ct.shape)
@@ -189,23 +221,26 @@ class DVH(object):
     def _get_dvh_data(self,dose,mode="real"):
         """Get dvh information for all organs and save it in a dictionary.
         """
-        
-        for organ_name in self.organs:
-            print(organ_name)
-            xy_list,D_info = self._get_organ_dvh(self.organs_array_dict[organ_name],dose)
 
-            print(f"Mode:{mode} and D_info:\n")
-            print(D_info)
+        for organ_name in self.organs:
+            if self.redundancy:
+                print(organ_name)
+            xy_list,D_info = self._get_organ_dvh(self.organs_array_dict[organ_name],dose)
+            if self.redundancy:
+                print(f"Mode:{mode} and D_info:\n")
+                print(D_info)
             self.D_info[organ_name+"_"+mode] = D_info
             xy_list.append(organ_name) ## [xx,yy,label]
             if mode == "real":
+                self.nowmode = "real"
                 self.organs_dvh_dict_real[organ_name] = xy_list
             elif mode == "fake":
+                self.nowmode = "fake"
                 self.organs_dvh_dict_fake[organ_name] = xy_list
             else:
                 print("!! Error mode in _get_dvh_data.")
         return 0
-    
+
     def _get_organ_dvh(self,organ_array,dose):
         """Obtain the curve x, y coordinate value (1,000 points)
             of the DVH of the organ.
@@ -242,7 +277,7 @@ class DVH(object):
                 D0 = x
                 notfindD0 = False
             yy.append(y_value)
-            
+
 
         xx= xx.tolist()
         yy[-1]=0
@@ -255,7 +290,7 @@ class DVH(object):
           "sienna",
           "firebrick",
           "darkmagenta",
-    
+
           "darkblue",
           "peru",
           "teal",
@@ -275,20 +310,21 @@ class DVH(object):
                  "skull":"Skull",
                  "soft_tissue":"Soft tissue",
                  "bone":"Bone",
-                 "air":"Air"}
-        
+                 "air":"Air",
+                 "skin":"Skin"}
+
         plt.style.use('ggplot')
         fg=plt.figure(dpi=200)
         ax=fg.add_subplot(1,1,1)
         fake_cache = f"/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/dose/{self.pname}/fake_dvh.npy"
         real_cache = f"/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/dose/{self.pname}/real_dvh.npy"
         dvh_cache = f"/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/dose/{self.pname}/dvh.npy"
-        if reload or (not (os.path.isfile(real_cache))):
-            self._get_dvh_data(self.total_dose_real,mode="real")
-            np.save(real_cache, self.organs_dvh_dict_real)
-        if reload or (not (os.path.isfile(fake_cache))):
-            self._get_dvh_data(self.total_dose_fake,mode="fake")
-            np.save(fake_cache, self.organs_dvh_dict_fake)
+#         if reload or (not (os.path.isfile(real_cache))):
+#             self._get_dvh_data(self.total_dose_real,mode="real")
+#             np.save(real_cache, self.organs_dvh_dict_real)
+#         if reload or (not (os.path.isfile(fake_cache))):
+#             self._get_dvh_data(self.total_dose_fake,mode="fake")
+#             np.save(fake_cache, self.organs_dvh_dict_fake)
         if reload or (not (os.path.isfile(dvh_cache))):
             self._get_dvh_data(self.total_dose_real,mode="real")
             self._get_dvh_data(self.total_dose_fake,mode="fake")
@@ -304,7 +340,7 @@ class DVH(object):
             _dvh_info_real = self.organs_dvh_dict_real[organ_name]
             ax.plot(_dvh_info_real[0],_dvh_info_real[1],linewidth=2,color=colors[idx],linestyle='-',label=organ_labels[organ_name]+" Real")
 
-            
+
             _dvh_info_fake = self.organs_dvh_dict_fake[organ_name]
             ax.plot(_dvh_info_fake[0],_dvh_info_fake[1],linewidth=2,color=colors[idx],linestyle=':',label=organ_labels[organ_name]+" Fake")
             # label=_dvh_info_fake[2],
@@ -315,9 +351,9 @@ class DVH(object):
         plt.title("Dose-Volume Histogram")
         plt.savefig(f"./{self.pname}_DVH.png")
         plt.show()
-
-        print("DVH info:")
-        print(self.D_info)
+        if self.redundancy:
+            print("DVH info:")
+            print(self.D_info)
         return 0
 
     def _get_array(self,fold,name):
