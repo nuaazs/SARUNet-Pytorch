@@ -259,12 +259,19 @@ class DVH(object):
             return xx,yy
         out_dose = np.zeros(organ_array.shape)
         out_dose[organ_array>0] = dose[organ_array>0]
-        max_dose = dose.max()
-        xx = np.linspace(0,max_dose,1001)
+        out_dose = out_dose[organ_array>0]
+        # print(f"Length os out_dose:{out_dose.shape}")
+        
+        max_dose = np.max(out_dose)
+        mean_dose = np.mean(out_dose)
+        xx = np.linspace(0,np.max(dose),1001)
         xx = xx[:1000]
         yy = []
-
-        notfindD95,notfindD100,notfindD0 = True,True,True
+        Dmax = max_dose
+        Dmean = mean_dose
+        D100,D98,D95,D50,D2,D0 = 0,0,0,0,0,0
+        
+        notfindD95,notfindD100,notfindD0,notfindD50,notfindD2,notfindD98 = True,True,True,True,True,True
         for x in xx:
             y_value = len(out_dose[out_dose>x]) / len(organ_array[organ_array>0])
             if y_value<0.95 and notfindD95:
@@ -276,15 +283,24 @@ class DVH(object):
             if y_value<0.01 and notfindD0:
                 D0 = x
                 notfindD0 = False
+            if y_value<0.50 and notfindD50:
+                D50 = x
+                notfindD0 = False
+            if y_value<0.02 and notfindD2:
+                D2 = x
+                notfindD0 = False
+            if y_value<0.98 and notfindD98:
+                D98 = x
+                notfindD0 = False
             yy.append(y_value)
 
 
         xx= xx.tolist()
         yy[-1]=0
-        D_info = {"D95":D95,"D100":D100,"D0":D0}
+        D_info = {"D95":D95,"D100":D100,"D0":D0,"D50":D50,"D2":D2,"D98":D98,"Dmax":Dmax,"Dmean":Dmean}
         return [xx,yy],D_info
 
-    def plot_dvh(self,reload=False):
+    def plot_dvh(self,reload=False,show_pic=False):
         colors = [
           "green",
           "sienna",
@@ -314,7 +330,7 @@ class DVH(object):
                  "skin":"Skin"}
 
         plt.style.use('ggplot')
-        fg=plt.figure(dpi=200)
+        fg=plt.figure(dpi=400)
         ax=fg.add_subplot(1,1,1)
         fake_cache = f"/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/dose/{self.pname}/fake_dvh.npy"
         real_cache = f"/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/SARUp_dream_3/dose/{self.pname}/real_dvh.npy"
@@ -335,25 +351,26 @@ class DVH(object):
         self.organs_dvh_dict_real = np.load(real_cache,allow_pickle=True).item()
         self.organs_dvh_dict_fake = np.load(fake_cache,allow_pickle=True).item()
         self.D_info = np.load(dvh_cache,allow_pickle=True).item()
+        
+        if show_pic:
+            for idx,organ_name in enumerate(self.organs_array_dict.keys()):
+                _dvh_info_real = self.organs_dvh_dict_real[organ_name]
+                ax.plot(_dvh_info_real[0],_dvh_info_real[1],linewidth=2,color=colors[idx],linestyle='-',label=organ_labels[organ_name]+" Real")
 
-        for idx,organ_name in enumerate(self.organs_array_dict.keys()):
-            _dvh_info_real = self.organs_dvh_dict_real[organ_name]
-            ax.plot(_dvh_info_real[0],_dvh_info_real[1],linewidth=2,color=colors[idx],linestyle='-',label=organ_labels[organ_name]+" Real")
 
+                _dvh_info_fake = self.organs_dvh_dict_fake[organ_name]
+                ax.plot(_dvh_info_fake[0],_dvh_info_fake[1],linewidth=2,color=colors[idx],linestyle=':',label=organ_labels[organ_name]+" Fake")
+                # label=_dvh_info_fake[2],
+            ax.set_xlabel("Dose(Gy)")
+            ax.set_ylabel("Ratio of total structure volume(%)")
 
-            _dvh_info_fake = self.organs_dvh_dict_fake[organ_name]
-            ax.plot(_dvh_info_fake[0],_dvh_info_fake[1],linewidth=2,color=colors[idx],linestyle=':',label=organ_labels[organ_name]+" Fake")
-            # label=_dvh_info_fake[2],
-        ax.set_xlabel("Dose(Gy)")
-        ax.set_ylabel("Ratio of total structure volume(%)")
-
-        #plt.legend()
-        plt.title("Dose-Volume Histogram")
-        plt.savefig(f"./{self.pname}_DVH.png")
-        plt.show()
-        if self.redundancy:
-            print("DVH info:")
-            print(self.D_info)
+            plt.legend(prop={'size': 6})
+            plt.title("Dose-Volume Histogram")
+            plt.savefig(f"./{self.pname}_DVH.png")
+            plt.show()
+            if self.redundancy:
+                print("DVH info:")
+                print(self.D_info)
         return 0
 
     def _get_array(self,fold,name):

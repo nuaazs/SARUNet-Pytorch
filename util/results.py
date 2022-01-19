@@ -98,14 +98,13 @@ class DataLoader(object):
             rpath (str, optional): [results path]. Defaults to "/home/zhaosheng/paper2/online_code/cbamunet-pix2pix/results/".
             epoch (str, optional): [Batch of interest]. Defaults to "best".
         """
-        self.organs_list = ["soft_tissue","bone","air"]
+        self.organs_list = ["lens_l","lens_r","ssj_l","ssj_r","brain","brainstem","gtv","skull","skin","air"]#["soft_tissue","bone"]
         print(f"Generate {net_name} DataLoader")
         self.rpath = rpath
         self.net_name = net_name
         self.SAVE_PATH = rpath+f"/{net_name}/" # this backbone's result
         self.ROOT = self.SAVE_PATH+f"/test_{epoch}/images/" # pngs
         self._change_dir()
-
 
     def _split_ct(self,array):
         """Depending on the range of CT values, 
@@ -125,9 +124,8 @@ class DataLoader(object):
         soft_tissue_array[array>=-200] =1
         soft_tissue_array[array>400] =0
         bone_array[array>400] =1
-        air_array[array<-200] = 1
+        air_array[array<-900] = 1
         return soft_tissue_array,bone_array,air_array
-
 
     def _get_mask(self,array,label):
         """Get the mask with the label value.
@@ -153,15 +151,19 @@ class DataLoader(object):
         Returns:
             [_array]: [numpy array which has been found.]
         """
+        print(f"\t-> Get {pname}-{name}")
         boron = [file_ for file_ in os.listdir(os.path.join(self.rpath,"seg")) if (name in file_) and (pname in file_) and ("npy" in file_)]
         _array = np.load(os.path.join(self.rpath,"seg",boron[0]))
-        return _array
+        #print(pname)
+        #print(_array.shape)
+        
+        return _array.transpose(1,2,0)
     
     def _get_organ_arrays(self):
         _soft_tissue,_bone,_air = self._split_ct(self.real_B_array)
-        np.save(self.rpath+os.path.join(f"/seg/{self.pname}_soft_tissue.npy"),_soft_tissue)
-        np.save(self.rpath+os.path.join(f"/seg/{self.pname}_bone.npy"),_bone)
-        np.save(self.rpath+os.path.join(f"/seg/{self.pname}_air.npy"),_air)
+        np.save(self.rpath+os.path.join(f"/seg/{self.pname}_soft_tissue.npy"),_soft_tissue.transpose(2,0,1))
+        np.save(self.rpath+os.path.join(f"/seg/{self.pname}_bone.npy"),_bone.transpose(2,0,1))
+        np.save(self.rpath+os.path.join(f"/seg/{self.pname}_air.npy"),_air.transpose(2,0,1))
 
     def _change_dir(self):
         os.chdir(self.SAVE_PATH)
@@ -185,7 +187,6 @@ class DataLoader(object):
         _range = np.max(data) - np.min(data)
         return (data - np.min(data)) / (_range)
 
-        
     def _images_list(self,pname,mode):
         all_files  = os.listdir(self.ROOT)
         _list = sorted([os.path.join(self.ROOT,file_name) for file_name in all_files if (file_name.startswith(pname) ) and (mode in file_name)])
@@ -224,13 +225,6 @@ class DataLoader(object):
         me= data.mean()
         return me
     
-#     def _get_psnr(self):
-#         mse = self._get_mse()
-#         if mse < 1.0e-10:
-#             return 100
-#         PIXEL_MAX = 1
-#         return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
-
     def _get_label_error(self,organ):
         """AI is creating summary for _get_label_error
 
@@ -241,6 +235,9 @@ class DataLoader(object):
             [type]: [description]
         """
         label_array = self._get_array(organ,self.pname)
+        #print(organ)
+        #print(label_array.shape)
+        #print(self.fake_B_array.shape)
         _error = self.fake_B_array[label_array>0] - self.real_B_array[label_array>0]
         # _error[_error > 1000] = 1000
         # _error[_error < -1000]  = -1000
@@ -259,6 +256,32 @@ class DataLoader(object):
         mae= data.mean()
         return mae
 
+    def _get_label_me(self,organ):
+        """AI is creating summary for _get_label_mae
+
+        Args:
+            organ ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        data= self._get_label_error(organ)
+        me= data.mean()
+        return me
+    
+    def _get_label_rmse(self,organ):
+        """AI is creating summary for _get_label_mae
+
+        Args:
+            organ ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        data= self._get_label_error(organ)
+        rmse= np.sqrt((data** 2).mean())
+        return rmse
+    
     def _get_organs_mae(self):
         """AI is creating summary for _get_organs_mae
 
@@ -269,7 +292,29 @@ class DataLoader(object):
         for organ in self.organs_list:
             mae_dict[organ]=self._get_label_mae(organ)
         return mae_dict
+    
+    def _get_organs_me(self):
+        """AI is creating summary for _get_organs_mae
 
+        Returns:
+            [type]: [description]
+        """
+        me_dict = {}
+        for organ in self.organs_list:
+            me_dict[organ]=self._get_label_me(organ)
+        return me_dict
+    
+    def _get_organs_rmse(self):
+        """AI is creating summary for _get_organs_mae
+
+        Returns:
+            [type]: [description]
+        """
+        rmse_dict = {}
+        for organ in self.organs_list:
+            rmse_dict[organ]=self._get_label_rmse(organ)
+        return rmse_dict
+    
     def _get_output_nii(self,mode,pname):
         """AI is creating summary for _get_output_nii
 
@@ -285,7 +330,6 @@ class DataLoader(object):
         nii = sitk.GetImageFromArray(np_list)
         return np.array(np_list),nii
     
-
     def save_nii(self,root_path='./',txt_path='./',save_txt=False,save_mat=False):
         """AI is creating summary for save_nii
 
@@ -461,14 +505,16 @@ class DataLoader(object):
         self.fake_B_array[self.fake_B_array>1700] = 1700
         self.fake_B_array[self.fake_B_array<-1000] = -1000
     
-        if not (os.path.exists(self.rpath+os.path.join(f"/seg/{self.pname}_soft_tissue.npy"))):
-            self._get_organ_arrays()
+        #if not (os.path.exists(self.rpath+os.path.join(f"/seg/{self.pname}_soft_tissue.npy"))):
+        self._get_organ_arrays()
             #print("No organ arryas. Loaded!")
         self.error = self._get_error(self.real_B_array,self.fake_B_array)
         self.mae = self._get_mae()
         self.rmse = self._get_rmse()
         self.me = self._get_me()
-        # self.organs_mae = self._get_organs_mae()
+        self.organs_mae = self._get_organs_mae()
+        self.organs_me = self._get_organs_me()
+        self.organs_rmse = self._get_organs_rmse()
 
 
     def _nii_to_mat(self,nii_file_path,mat_file_path):

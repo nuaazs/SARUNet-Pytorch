@@ -5,7 +5,7 @@ from PIL import Image
 import numpy as np
 import torchvision.transforms as transforms
 import torch
-
+from torch.autograd import Variable
 class AlignedDataset_img(BaseDataset):
     """A dataset class for paired image dataset.
 
@@ -109,10 +109,10 @@ class AlignedDataset_mat(BaseDataset):
         A = get_mat(_input)
         B = np.expand_dims(get_mat(_target),axis=2)
 
-        A_transform = transforms.Compose([transforms.ToTensor()])
-        B_transform = transforms.Compose([transforms.ToTensor()])
-        A = A_transform(A).type(torch.FloatTensor)
-        B = B_transform(B).type(torch.FloatTensor)
+        #A_transform = transforms.Compose([transforms.ToTensor()])
+        #B_transform = transforms.Compose([transforms.ToTensor()])
+        A = A.type(torch.FloatTensor)
+        B = B.type(torch.FloatTensor)
         return {'A': A, 'B': B, 'A_paths': _input, 'B_paths': _target}
 
     def __len__(self):
@@ -123,30 +123,25 @@ class AlignedDataset_mat(BaseDataset):
 class AlignedDataset_npy(BaseDataset):
     def __init__(self, opt):
         BaseDataset.__init__(self, opt)
-        self.dir_AB = os.path.join(opt.dataroot, opt.phase)  # get the image directory
-        self.input_path = os.path.join(self.dir_AB,"inp")
-        self.target_path = os.path.join(self.dir_AB,"out")
-
-        self.input_paths = sorted(make_dataset(self.input_path, opt.max_dataset_size))  # get image paths
-        self.target_paths = sorted(make_dataset(self.target_path, opt.max_dataset_size)) # get image paths
-
-        assert(self.opt.load_size >= self.opt.crop_size)   # crop_size should be smaller than the size of loaded image
+        self.dir_AB = os.path.join(opt.dataroot, opt.phase)
+        self.npy_paths = sorted(make_dataset(self.dir_AB, opt.max_dataset_size))
         self.input_nc = self.opt.output_nc if self.opt.direction == 'BtoA' else self.opt.input_nc
         self.output_nc = self.opt.input_nc if self.opt.direction == 'BtoA' else self.opt.output_nc
 
     def __getitem__(self, index):
 
-        _input = self.input_paths[index]
-        _target = self.target_paths[index]
+        _file = self.npy_paths[index]
+        #A = np.expand_dims(np.load(_file)[0,0:64,0:64,0:64],axis=0)
+        #B = np.load(_file)[1:10,0:64,0:64,0:64]
 
-        A = np.load(_input)
-        B = np.expand_dims(np.load(_target),axis=2)
-        
-        A_transform = transforms.Compose([transforms.ToTensor()])
-        B_transform = transforms.Compose([transforms.ToTensor()])
-        A = A_transform(A).type(torch.FloatTensor)
-        B = B_transform(B).type(torch.FloatTensor)
-        return {'A': A, 'B': B, 'A_paths': _input, 'B_paths': _target}
-
+        A = Variable(torch.randn(2, 64, 64, 256))
+        B = Variable(torch.randn(8, 64, 64, 256))
+        print(f"A shape:{A.shape}")
+        print(f"B shape:{B.shape}")
+        #A_transform = transforms.Compose([transforms.ToTensor()])
+        #B_transform = transforms.Compose([transforms.ToTensor()])
+        #A = torch.from_numpy(A)
+        #B = torch.from_numpy(B)
+        return {'A': A, 'B': B, 'A_paths': _file, 'B_paths': _file}
     def __len__(self):
-        return len(self.input_paths)
+        return len(self.npy_paths)

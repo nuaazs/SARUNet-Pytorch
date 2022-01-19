@@ -38,6 +38,7 @@ from models.SARU_test2 import SARUt2
 from models.SARU_test3 import SARUt3
 from models.SARU_test4 import SARUt4
 from models.SARU_test5 import SARUt5
+from models.unet3d import UNet as unet3d
 
 ##############################################################################
 # Funtions
@@ -207,6 +208,8 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, ini
         net = SARUp_no512(input_nc, output_nc, num_downs=5, ngf=64, norm_layer=norm_layer)
     elif netG == "TransUnet":
         net = TransUnet(in_channels=1, img_dim=256, vit_blocks=1, vit_dim_linear_mhsa_block=512, classes=1)
+    elif netG == "unet3d":
+        net = unet3d(input_nc, output_nc)
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
 
