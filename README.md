@@ -15,80 +15,32 @@
 <br>
 </div>
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/saru_mm_压缩后.png" width="800px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/stage_压缩后.png" width="800px" />
 </div>
-
-
-
-> 该项目还未完成。
->
-> Note: The project is not yet complete.
-
 
 
 ## Todo List:
 
 - SARU++
-- SARU
-- VNet/Unet/Resnet/pix2pix
+- 3D SARU++
 
 
 
 ## Table of Content
 
-
-- [SARU-Net: A Self Attention ResUnet to generate synthetic CT images for MRI-only BNCT treatment planning](#saru-net-a-self-attention-resunet-to-generate-synthetic-ct-images-for-mri-only-bnct-treatment-planning)
-  - [Todo List:](#todo-list)
-  - [Table of Content](#table-of-content)
-  - [Preparation](#preparation)
-    - [Environment setup](#environment-setup)
-    - [Dataset preparation](#dataset-preparation)
-  - [Pretrained weights](#pretrained-weights)
-  - [Training](#training)
-  - [MAE Result of 13 patients](#mae-result-of-13-patients)
-  - [CBAM MODELS](#cbam-models)
-    - [Spatial Attention](#spatial-attention)
-    - [Channel Attention](#channel-attention)
-    - [Attention ResBlock](#attention-resblock)
-  - [Code structure](#code-structure)
-  - [Pull Request](#pull-request)
-  - [Citation](#citation)
-  - [Other Languages](#other-languages)
-  - [Related Projects](#related-projects)
-  - [Acknowledgments](#acknowledgments)
-    
-    - [Environment setup](#environment-setup)
-    - [Dataset preparation](#dataset-preparation)
-  - [Pretrained weights](#pretrained-weights)
-  - [Training](#training)
-  - [MAE Result](#mae-result)
-  - [CBAM MODELS](#cbam-models)
-    
-    - [Spatial Attention](#spatial-attention)
-    
-    - [Channel Attention](#channel-attention)
-    
-      
-
-
 ## Preparation
-
 - Linux or macOS
 - Python 3
 - CPU or NVIDIA GPU + CUDA CuDNN
 
 
-
 ### Environment setup
-
 We advise the creation of a new conda environment including all necessary packages. The repository includes a requirements file. Please create and activate the new environment with
 
 ```
 conda env create -f requirements.yml
 conda activate attngan
 ```
-
-
 
 ### Dataset preparation
 
@@ -148,59 +100,11 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 
 ## MAE Result of 13 patients
 
-| BackBone            | Params      | MEAN MAE  | STD       | MEAN ME  | STD      | MEAN RMSE  | STD       |
-| ------------------- | ----------- | --------- | --------- | -------- | -------- | ---------- | --------- |
-| UNet                | 13.395 M    | 124.2     | 36.56     | 64.07    | 30.77    | 338.66     | 68.39     |
-| ResNet              | 11.371M     | 71.28     | 13.34     | -3.27    | 8.48     | 202.82     | 37.78     |
-| DeepUNet            | 41.823M     | 73.8      | 15.77     | -2.2     | 13.35    | 212.8      | 40.86     |
-| Pix2Pix             | 44.588M     | 89.72     | 19.42     | 5.07     | 16.68    | 238.08     | 42.47     |
-| DenseUNet           | 49.518M     | 130.32    | 31.42     | 58.57    | 33.8     | 348.42     | 73.07     |
-| **SARU-Net (ours)** | **16.212M** | **62.61** | **11.26** | **9.77** | **7.84** | **183.04** | **30.26** |
+
 
 <div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/MAE_压缩后.png" width="600px" />
+<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/organ_result_boxplot_压缩后.png" width="800px" />
 </div>
-
-### SAG
-
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/geng07_001_sag_压缩后.png" width="900px" />
-</div>
-
-### COR
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/geng07_001_cor_压缩后.png" width="900px" />
-</div>
-
-
-### TRANS
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/geng07_001_trans_压缩后.png" width="900px" />
-</div>
-
-
-## CBAM MODELS
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/conv_pool_attn_压缩后.png" width="600px" />
-</div>
-
-
-### Spatial Attention
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/spatial_压缩后.png" width="600px" />
-</div>
-
-
-### Channel Attention
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/channel_压缩后.png" width="600px" />
-</div>
-### Attention ResBlock
-
-
-
-
-
 
 ## Code structure
 
