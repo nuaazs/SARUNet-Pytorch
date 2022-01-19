@@ -21,27 +21,12 @@ from torch.optim import lr_scheduler
 from transform_unet import TransUnet
 from models.unet_modules import UnetGenerator
 from models.resnet_modules import ResnetGenerator
-from models.SARU import SARU
 from models.SARUp import SARUp
 from models.unet import UNet
 from smat_models.SmaAt_UNet import SmaAt_UNet
-from models.resunet import ResUNet
-from models.ffc import FFCResNetGenerator
 from models.denseunet import DenseUnet
-# from models_v2.resunet import ResUNet
-# from models_v2.resnet18 import Res18
-from models.cbam_resunet import CbamResUNet
-from models.SARU_test import SARUt
-from models.SARUp_nores import SARUp_nores
-from models.SARUp_no512 import SARUp_no512
-from models.SARU_test2 import SARUt2
-from models.SARU_test3 import SARUt3
-from models.SARU_test4 import SARUt4
-from models.SARU_test5 import SARUt5
-from models.unet3d import UNet as unet3d
 
-##############################################################################
-# Funtions
+
 ##############################################################################
 def get_norm_layer(norm_type='instance'):
     """Return a normalization layer
@@ -179,42 +164,14 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=True, ini
         net = SmaAt_UNet(input_nc, output_nc)
     elif netG == 'unet_128':
         net = UnetGenerator(input_nc, output_nc, 7, ngf, norm_layer=norm_layer, use_dropout=use_dropout,use_depthwise=False,use_attn=False)
-    elif netG == 'ffc':
-        net = FFCResNetGenerator(input_nc, output_nc)
-    elif netG == 'resunet':
-        net = ResUNet(input_nc, output_nc, deep_supervision=False)
-
     elif netG == 'denseunet':
         net = DenseUnet(input_nc, output_nc)
     elif netG == 'cbamresunet':
         net = CbamResUNet(input_nc, output_nc,deep_supervision=False)
     elif netG == 'SARU':
-        net = SARU(input_nc, output_nc, addtional_n=0, num_downs=5, ngf=64, norm_layer=norm_layer)
-    elif netG == 'SARUp':
-        net = SARUp(input_nc, output_nc, 5, ngf, norm_layer=norm_layer)
-    elif netG == 'SARUt':
-        net = SARUt(input_nc, output_nc, addtional_n=0, num_downs=7, ngf=64, norm_layer=norm_layer)
-    elif netG == 'SARUt2':
-        net = SARUt2(input_nc, output_nc, num_downs=7, ngf=64, norm_layer=norm_layer)
-    elif netG == 'SARUt3':
-        net = SARUt3(input_nc, output_nc, num_downs=5, ngf=64, norm_layer=norm_layer)
-    elif netG == 'SARUt4':
-        net = SARUt4(input_nc, output_nc, num_downs=5, ngf=64, norm_layer=norm_layer)
-    elif netG == 'SARUt5':
-        net = SARUt5(input_nc, output_nc, num_downs=7, ngf=64, norm_layer=norm_layer)
-    elif netG == 'SARUp_nores':
-        net = SARUp_nores(input_nc, output_nc, num_downs=5, ngf=64, norm_layer=norm_layer)
-    elif netG == 'SARUp_no512':
-        net = SARUp_no512(input_nc, output_nc, num_downs=5, ngf=64, norm_layer=norm_layer)
-    elif netG == "TransUnet":
-        net = TransUnet(in_channels=1, img_dim=256, vit_blocks=1, vit_dim_linear_mhsa_block=512, classes=1)
-    elif netG == "unet3d":
-        net = unet3d(input_nc, output_nc)
+        net = SARU(input_nc, output_nc)
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
-
-
-
     return init_net(net, init_type, init_gain, gpu_ids)
 
 def define_D(input_nc, ndf, netD, n_layers_D=3, norm='batch', init_type='normal', init_gain=0.02, gpu_ids=[]):
