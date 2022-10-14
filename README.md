@@ -97,15 +97,6 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 ```
 
 
-
-## MAE Result of 13 patients
-
-
-
-<div align=center>
-<img src="https://shengbucket.oss-cn-hangzhou.aliyuncs.com/files/organ_result_boxplot_压缩后.png" width="800px" />
-</div>
-
 ## Code structure
 
 To help users better understand and use our code, we briefly overview the functionality and implementation of each package and each module [here](https://iint.icu/).
@@ -123,15 +114,14 @@ You are always welcome to contribute to this repository by sending a [pull reque
 If you use this code for your research, please cite our papers.
 
 ```
-@inproceedings{}
+@article{zhao2022saru,
+  title={SARU: A self attention ResUnet to generate synthetic CT images for MR-only BNCT treatment planning},
+  author={Zhao, Sheng and Geng, Changran and Guo, Chang and Tian, Feng and Tang, Xiaobin},
+  journal={Medical Physics},
+  year={2022},
+  publisher={Wiley Online Library}
 }
 ```
-
-
-
-## Other Languages
-
-[简体中文]()
 
 
 
