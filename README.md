@@ -89,7 +89,7 @@ All the models were trained on 2\*NVIDIA 12GB TITAN V.
 
 ## Training
 
-The training routine of Attn-GAN is mainly based on the pix2pix codebase, available with details in the official repository.
+The training routine of SARU is mainly based on the pix2pix codebase, available with details in the official repository.
 
 To launch a default training, run
 
@@ -101,14 +101,6 @@ python train.py --data_root path/to/data --gpu_ids 0,1,2 --netG attnunet --netD 
 ## Code structure
 
 To help users better understand and use our code, we briefly overview the functionality and implementation of each package and each module [here](https://iint.icu/).
-
-
-
-## Pull Request
-
-You are always welcome to contribute to this repository by sending a [pull request](https://help.github.com/articles/about-pull-requests/). Please run `flake8 --ignore E501 .` and `python ./scripts/test_before_push.py` before you commit the code. Please also update the code structure [overview](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/blob/master/docs/overview.md) accordingly if you add or remove files.
-
-
 
 ## Citation
 
